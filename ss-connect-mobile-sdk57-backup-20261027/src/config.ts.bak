@@ -1,0 +1,26 @@
+import Constants from 'expo-constants';
+import { buildApiBaseUrl, resolveDevelopmentApiUrl, resolvePublicApiUrl } from './config/url';
+
+function getExpoPublicApiUrl(): string | undefined {
+  const extra = Constants.expoConfig?.extra;
+  if (extra?.EXPO_PUBLIC_API_URL) {
+    return extra.EXPO_PUBLIC_API_URL;
+  }
+  if (typeof process !== 'undefined' && process.env?.EXPO_PUBLIC_API_URL) {
+    return process.env.EXPO_PUBLIC_API_URL;
+  }
+  return undefined;
+}
+
+function getExpoDevelopmentHostUri(): string | undefined {
+  return Constants.expoConfig?.hostUri;
+}
+
+export const config = {
+  api: {
+    baseUrl: buildApiBaseUrl(
+      resolvePublicApiUrl(getExpoPublicApiUrl()),
+      resolveDevelopmentApiUrl(getExpoDevelopmentHostUri()),
+    ),
+  },
+};

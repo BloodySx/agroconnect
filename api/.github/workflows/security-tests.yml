@@ -1,0 +1,37 @@
+name: SSConnect security tests
+
+on:
+  push:
+    branches:
+      - security/admin-only-customer-registration
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  auth-security:
+    name: Compile and test authentication (no database)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      DATABASE_URL: postgresql://ci:ci@127.0.0.1:5432/ssconnect_ci
+      DIRECT_URL: postgresql://ci:ci@127.0.0.1:5432/ssconnect_ci
+      JWT_SECRET: ci-only-test-secret-key-not-for-production-123456
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Generate Prisma client
+        run: npx prisma generate
+      - name: Compile backend
+        run: npm run build
+      - name: Test permissions with mock users
+        run: npx tsx --test tests/auth-security.test.ts tests/customer-isolation.test.ts

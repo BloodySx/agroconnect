@@ -1,0 +1,20 @@
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ss-connect-backend:latest
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      NODE_ENV: production
+      PORT: 3333
+    expose:
+      - "3333"
+    networks:
+      - ssconnect
+
+networks:
+  ssconnect:
+    driver: bridge

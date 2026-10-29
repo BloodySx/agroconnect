@@ -1,0 +1,16 @@
+SERVER_READY
+EMAIL2=admin2_20260830170859@teste.com
+REGISTER=201
+PROMOTE_OUT=node.exe : npm error could not determine executable to run
+No linha:1 caractere:1
++ & "C:\nvm4w\nodejs/node.exe" "C:\nvm4w\nodejs/node_modules/npm/bin/np ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (npm error could...ecutable to run:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+npm error A complete log of this run can be found in: 
+C:\Users\GuilhermeSilva\AppData\Local\npm-cache\_logs\2026-08-30T20_09_00_571Z-debug-0.log
+
+LOGIN_ADMIN=200 role=USER
+ADMIN_HEALTH_ADMIN=403 resp={"message":"Acesso negado: permissão administrativa necessária"}
+DONE

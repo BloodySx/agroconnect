@@ -1,0 +1,76 @@
+name: SSConnect Docker smoke test
+
+on:
+  push:
+    branches:
+      - deployment/cloud-run-dockerfile
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  docker-smoke:
+    name: Build and smoke-test Linux container
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build production Docker image
+        run: docker build --tag ssconnect-backend:ci .
+
+      - name: Verify runtime has Prisma Client but not vulnerable CLI toolchain
+        run: |
+          docker run --rm --entrypoint node ssconnect-backend:ci -e '
+            const fs = require("fs");
+            for (const path of ["node_modules/prisma", "node_modules/@prisma/config", "node_modules/deepmerge-ts"]) {
+              if (fs.existsSync(path)) {
+                throw new Error("Unexpected runtime dependency: " + path);
+              }
+            }
+            const { PrismaClient } = require("@prisma/client");
+            const prisma = new PrismaClient();
+            console.log("Prisma Client loaded without CLI dependencies");
+          '
+
+      - name: Start API with dummy configuration only
+        run: |
+          docker run -d --name ssconnect-smoke \
+            -p 127.0.0.1:18080:8080 \
+            -e NODE_ENV=production \
+            -e PORT=8080 \
+            -e DATABASE_URL='postgresql://test:test@127.0.0.1:5432/test?schema=public' \
+            -e DIRECT_URL='postgresql://test:test@127.0.0.1:5432/test?schema=public' \
+            -e JWT_SECRET='ci-only-placeholder-that-is-long-enough-1234567890' \
+            -e CORS_ORIGIN='https://example.invalid' \
+            ssconnect-backend:ci
+
+      - name: Test HTTP health endpoint
+        run: |
+          set -euo pipefail
+          ready=0
+          for attempt in $(seq 1 45); do
+            if curl -fsS --max-time 2 http://127.0.0.1:18080/health -o health.json; then
+              ready=1
+              break
+            fi
+            sleep 1
+          done
+          if [ "$ready" -ne 1 ]; then
+            echo "API did not start or /health is not responding"
+            exit 1
+          fi
+          cat health.json
+          grep -Eq '"status"[[:space:]]*:[[:space:]]*"ok"' health.json
+
+      - name: Container logs and cleanup
+        if: always()
+        run: |
+          docker logs ssconnect-smoke 2>&1 || true
+          docker rm -f ssconnect-smoke 2>/dev/null || true

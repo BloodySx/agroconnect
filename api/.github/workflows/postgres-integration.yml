@@ -1,0 +1,55 @@
+name: SSConnect isolated PostgreSQL integration
+
+on:
+  push:
+    branches:
+      - security/admin-only-customer-registration
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  isolated-db:
+    name: API integration using disposable PostgreSQL
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: ssconnect_ci
+          POSTGRES_PASSWORD: ci_only_password
+          POSTGRES_DB: ssconnect_ci
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U ssconnect_ci -d ssconnect_ci"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 12
+    env:
+      SSCONNECT_TEST_DATABASE: '1'
+      NODE_ENV: test
+      DATABASE_URL: postgresql://ssconnect_ci:ci_only_password@127.0.0.1:5432/ssconnect_ci?schema=public
+      DIRECT_URL: postgresql://ssconnect_ci:ci_only_password@127.0.0.1:5432/ssconnect_ci?schema=public
+      JWT_SECRET: ci-only-isolated-postgres-test-secret-1234567890
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Generate Prisma client
+        run: npx prisma generate
+      - name: Build backend
+        run: npm run build
+      - name: Create schema ONLY in temporary CI PostgreSQL
+        run: npx prisma db push --skip-generate
+      - name: Test login, orders, prices and revocations using temporary DB
+        run: npx tsx --test tests/database-integration.test.ts

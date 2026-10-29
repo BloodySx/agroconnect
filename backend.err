@@ -1,0 +1,21 @@
+
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find module 'C:\SSConnect\src\server.ts' imported from C:\SSConnect\
+    at finalizeResolution (node:internal/modules/esm/resolve:274:11)
+    at moduleResolve (node:internal/modules/esm/resolve:859:10)
+    at defaultResolve (node:internal/modules/esm/resolve:983:11)
+    at nextResolve (node:internal/modules/esm/hooks:748:28)
+    at resolveBase (file:///C:/Users/GuilhermeSilva/AppData/Local/npm-cache/_npx/fd45a72a545557e9/node_modules/tsx/dist/register-SoqaU4rg.mjs:2:10334)
+    at resolveDirectory (file:///C:/Users/GuilhermeSilva/AppData/Local/npm-cache/_npx/fd45a72a545557e9/node_modules/tsx/dist/register-SoqaU4rg.mjs:2:11421)
+    at resolveTsPaths (file:///C:/Users/GuilhermeSilva/AppData/Local/npm-cache/_npx/fd45a72a545557e9/node_modules/tsx/dist/register-SoqaU4rg.mjs:2:13062)
+    at resolve (file:///C:/Users/GuilhermeSilva/AppData/Local/npm-cache/_npx/fd45a72a545557e9/node_modules/tsx/dist/register-SoqaU4rg.mjs:2:14748)
+    at nextResolve (node:internal/modules/esm/hooks:748:28)
+    at Hooks.resolve (node:internal/modules/esm/hooks:240:30) {
+  code: 'ERR_MODULE_NOT_FOUND',
+  url: 'file:///C:/SSConnect/src/server.ts'
+}
+
+Node.js v22.20.0
+^C

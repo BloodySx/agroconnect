@@ -1,0 +1,30 @@
+import { StyleSheet } from 'react-native';
+
+import { colors } from '../../theme';
+import { radius } from '../../theme';
+import { shadows } from '../../theme';
+import { spacing } from '../../theme';
+import { typography } from '../../theme';
+
+export const styles = StyleSheet.create({
+  container: {
+    width: '100%',
+    height: 56,
+    borderRadius: radius.lg,
+    backgroundColor: colors.primary,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: spacing.md,
+    ...shadows.sm,
+  },
+  text: {
+    ...typography.button,
+    color: colors.white,
+  },
+  disabled: {
+    opacity: 0.5,
+  },
+  pressed: {
+    backgroundColor: colors.primaryDark,
+  },
+});

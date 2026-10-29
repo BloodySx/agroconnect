@@ -1,0 +1,5 @@
+{"level":30,"time":1788128928022,"pid":18700,"hostname":"MaurilioCompras","msg":"Server listening at http://127.0.0.1:3338"}
+{"level":30,"time":1788128928022,"pid":18700,"hostname":"MaurilioCompras","msg":"Server listening at http://192.168.3.57:3338"}
+{"level":30,"time":1788128928022,"pid":18700,"hostname":"MaurilioCompras","msg":"Server running on port 3338 [production]"}
+{"level":30,"time":1788128933290,"pid":18700,"hostname":"MaurilioCompras","reqId":"req-1","req":{"method":"GET","url":"/health","host":"127.0.0.1:3338","remoteAddress":"127.0.0.1","remotePort":59001},"msg":"incoming request"}
+{"level":30,"time":1788128933297,"pid":18700,"hostname":"MaurilioCompras","reqId":"req-1","res":{"statusCode":200},"responseTime":6.375599999999395,"msg":"request completed"}

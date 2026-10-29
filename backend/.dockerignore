@@ -1,0 +1,49 @@
+# Dependencias locais e artefatos compilados
+node_modules
+dist
+.git
+.github
+
+# Configuracoes e segredos: nunca enviar ao contexto Docker
+.env
+.env.*
+**/.env
+**/.env.*
+.npmrc
+**/.npmrc
+*.pem
+*.key
+.secrets/
+secrets/
+
+# Backups, exportacoes, dados internos e seed local
+backups/
+**/backups/
+*.dump
+*.bak
+*.backup
+prisma/data/
+prisma/seed.ts
+
+# Logs e artefatos de diagnostico/testes locais
+*.log
+npm-debug.log*
+server.out*
+server.err*
+test.ts
+test_*.ps1
+test_results.txt
+test_server.*
+test_debug.txt
+tests/
+tmp_promote.ts
+audit-*.ts
+fix-*.ts
+deactivate-*.ts
+check_line.js
+write-migration.js
+migration.sql
+smoke.txt
+
+# Ferramentas apenas para desenvolvimento local
+docker-compose.yml
