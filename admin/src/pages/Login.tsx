@@ -51,10 +51,10 @@ export function LoginPage() {
       <div className="login-hero">
         <div className="login-hero__brand">
           <div className="login-hero__logo">SS</div>
-          SS Connect
+AgroConnect
         </div>
         <div>
-          <h2>Painel administrativo do SS Connect</h2>
+          <h2>Painel administrativo do AgroConnect</h2>
           <p>
             Gerencie pedidos, acompanhe o desempenho comercial e mantenha o controle das
             operações da plataforma em um só lugar.

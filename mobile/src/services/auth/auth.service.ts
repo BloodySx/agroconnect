@@ -16,7 +16,7 @@ export const authService = {
   login: async (identifier: string, password: string): Promise<LoginResponse> => {
     const response = await api.post<LoginResponse>('/auth/login', { identifier, password });
     if (!response.data) {
-      throw new Error('Resposta invÃ¡lida do servidor');
+      throw new Error('Resposta inválida do servidor');
     }
     await storage.setToken(response.data.token);
     return response.data;
@@ -25,11 +25,11 @@ export const authService = {
   getMe: async (): Promise<User> => {
     const token = await storage.getToken();
     if (!token) {
-      throw new Error('Token nÃ£o encontrado');
+      throw new Error('Token não encontrado');
     }
     const response = await api.get<User>('/auth/me', token);
     if (!response.data) {
-      throw new Error('Resposta invÃ¡lida do servidor');
+      throw new Error('Resposta inválida do servidor');
     }
     return response.data;
   },

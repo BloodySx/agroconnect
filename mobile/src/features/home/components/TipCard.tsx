@@ -11,7 +11,7 @@ export default function TipCard() {
         resizeMode="contain"
       />
       <View style={styles.tipContent}>
-        <Text style={styles.tipTitle}>Dica SS Connect</Text>
+        <Text style={styles.tipTitle}>Dica AgroConnect</Text>
         <Text style={styles.tipDescription}>
           Preencha os dados com atenção para uma cotação ainda mais precisa!
         </Text>

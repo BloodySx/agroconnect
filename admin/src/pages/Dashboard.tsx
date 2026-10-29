@@ -78,8 +78,8 @@ export function DashboardPage() {
   ];
 
   return (
-    <AdminLayout title="Dashboard" subtitle="Visão geral da operação do SS Connect">
-      <PageHeader title="Dashboard" subtitle="Visão geral da operação do SS Connect" />
+    <AdminLayout title="Dashboard" subtitle="Visão geral da operação do AgroConnect">
+      <PageHeader title="Dashboard" subtitle="Visão geral da operação do AgroConnect" />
 
       {loading ? (
         <LoadingState label="Carregando indicadores..." />

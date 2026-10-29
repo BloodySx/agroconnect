@@ -196,7 +196,7 @@ const handleCreateUserSubmit = async () => {
   };
 
   return (
-<AdminLayout title="Usuários" subtitle="Gerencie os usuários cadastrados no SS Connect">
+<AdminLayout title="Usuários" subtitle="Gerencie os usuários cadastrados no AgroConnect">
         <PageHeader
           title="Usuários"
           subtitle={`${pagination.total} usuário(s) cadastrado(s)`}

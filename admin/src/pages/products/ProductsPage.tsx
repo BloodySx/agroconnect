@@ -170,7 +170,7 @@ export function ProductsPage() {
   };
 
   return (
-    <AdminLayout title="Produtos" subtitle="Gerencie o catálogo de produtos do SS Connect">
+    <AdminLayout title="Produtos" subtitle="Gerencie o catálogo de produtos do AgroConnect">
       <PageHeader
         title="Catálogo de produtos"
         subtitle={`${pagination.total} produto(s) cadastrado(s)`}

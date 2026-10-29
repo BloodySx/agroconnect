@@ -249,7 +249,7 @@ export function PackagesPage() {
   };
 
   return (
-    <AdminLayout title="Embalagens" subtitle="Gerencie as embalagens disponíveis no SS Connect">
+    <AdminLayout title="Embalagens" subtitle="Gerencie as embalagens disponíveis no AgroConnect">
       <PageHeader
         title="Embalagens"
         subtitle={`${pagination.total} embalagem(ns) cadastrada(s)`}

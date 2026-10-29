@@ -38,7 +38,7 @@ export function Sidebar({ open, onNavigate }: { open: boolean; onNavigate: () =>
       <div className="sidebar__brand">
         <div className="sidebar__logo">SS</div>
         <div>
-          <div className="sidebar__brand-name">SS Connect</div>
+          <div className="sidebar__brand-name">AgroConnect</div>
           <div className="sidebar__brand-sub">Painel Administrativo</div>
         </div>
       </div>
@@ -69,7 +69,7 @@ export function Sidebar({ open, onNavigate }: { open: boolean; onNavigate: () =>
         })}
       </nav>
 
-      <div className="sidebar__footer">SS Connect © {new Date().getFullYear()}</div>
+      <div className="sidebar__footer">AgroConnect © {new Date().getFullYear()}</div>
     </aside>
   );
 }

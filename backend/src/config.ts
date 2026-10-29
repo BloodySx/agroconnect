@@ -7,7 +7,6 @@ const isProduction = process.env.NODE_ENV === 'production';
 const PLACEHOLDER_FRAGMENTS = [
   'CHANGE_ME',
   'change_in_production',
-  'ssconnect_jwt_secret_change_in_production',
 ];
 
 function fail(message: string): never {

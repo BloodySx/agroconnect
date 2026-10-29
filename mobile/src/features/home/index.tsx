@@ -21,7 +21,7 @@ export default function HomeScreen() {
     openingRef.current = true;
 
     const phoneNumber = '5519971424105';
-    const message = 'Olá! Tenho uma dúvida sobre o aplicativo SS Connect.';
+    const message = 'Olá! Tenho uma dúvida sobre o aplicativo AgroConnect.';
     const encodedMessage = encodeURIComponent(message);
 
     const whatsappUrl = `whatsapp://send?phone=${phoneNumber}&text=${encodedMessage}`;
@@ -152,9 +152,7 @@ export default function HomeScreen() {
 
             {/* COPYRIGHT */}
             <Text style={styles.copyright}>
-              © 2026 AgroConnect Agronegócios Ltda.
-              {'\n'}
-              Todos os direitos reservados.
+              © 2026 AgroConnect. Todos os direitos reservados.
             </Text>
           </View>
           
