@@ -1,9 +1,10 @@
-import { Pressable, Text, View, Image } from 'react-native';
+import { Pressable, Text, View } from 'react-native';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 import { styles } from '../styles';
 
 interface ActionItemProps {
-  icon: any;
+  icon: keyof typeof MaterialCommunityIcons.glyphMap;
   title: string;
   description: string;
   onPress: () => void;
@@ -34,13 +35,10 @@ export default function ActionItem({
           highlighted && styles.actionIconContainerHighlighted,
         ]}
       >
-        <Image
-          source={icon}
-          style={[
-            styles.actionIcon,
-            highlighted && styles.actionIconHighlighted,
-          ]}
-          resizeMode="contain"
+        <MaterialCommunityIcons
+          name={icon}
+          size={34}
+          color={highlighted ? '#FFFFFF' : '#397653'}
         />
       </View>
 
