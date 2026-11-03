@@ -69,7 +69,7 @@ export const styles = StyleSheet.create({
     marginRight: spacing.md,
   },
   productIconContainerSelected: {
-    backgroundColor: '#FF9C31',
+    backgroundColor: '#A7B88A',
   },
   productIconText: {
     fontSize: 22,
