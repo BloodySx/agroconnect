@@ -1,5 +1,6 @@
 import { useCallback, useId, useRef, useState } from 'react';
-import { Image, Keyboard, Platform, Pressable, ScrollView, Text, TextInput, View, InputAccessoryView } from 'react-native';
+import { Keyboard, Platform, Pressable, ScrollView, Text, TextInput, View, InputAccessoryView } from 'react-native';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
@@ -104,16 +105,13 @@ export default function QuantityScreen() {
           </Text>
 
           <View style={styles.packagingHeader}>
-            <Image
-              source={
-                quotation.package.type === 'SACHÊ'
-                  ? require('../../../assets/package/SACHE.png')
-                  : quotation.package.type === 'BOMBONA_20L'
-                    ? require('../../../assets/package/BB.png')
-                    : require('../../../assets/package/IBC.png')
-              }
-              style={styles.packagingIcon}
-            />
+            <View style={styles.packagingIcon}>
+              <MaterialCommunityIcons
+                name={quotation.package.type === 'SACHÊ' ? 'package-variant' : quotation.package.type === 'BOMBONA_20L' ? 'archive-outline' : 'cube-outline'}
+                size={40}
+                color="#397653"
+              />
+            </View>
 
             <Text style={styles.packagingName}>
               {getPackageDisplayName(quotation.package)}
