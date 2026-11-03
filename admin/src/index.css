@@ -880,7 +880,7 @@ button {
   margin-top: 6px;
 }
 
-kpi__hint {
+.kpi__hint {
   color: var(--color-text-faint);
   font-size: 12px;
   margin-top: 2px;
