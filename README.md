@@ -175,7 +175,6 @@ O painel lê `VITE_API_URL` do Vite. O arquivo `admin/vite-env.d.ts` já configu
 - ✅ TypeScript check backend (erros: 0)
 - ✅ TypeScript check admin (erros: 0)
 - ✅ Correções de encoding (Sachê, — (em dash), inválida)
-- ✅ Branding: Solo Sagrado → AgroConnect
 - ✅ Configuração de segurança do JWT revisada para o AgroConnect
 
 ## Limitações Conhecidas
