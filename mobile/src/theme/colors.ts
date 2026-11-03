@@ -26,19 +26,3 @@ export const colors = {
   headerGradientEnd: '#79A987',
 };
 
-export const shadows = {
-  sm: {
-    shadowColor: '#183B2B',
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.07,
-    shadowRadius: 10,
-    elevation: 2,
-  },
-  md: {
-    shadowColor: '#183B2B',
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.1,
-    shadowRadius: 16,
-    elevation: 4,
-  },
-};
