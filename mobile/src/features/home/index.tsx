@@ -133,9 +133,9 @@ export default function HomeScreen() {
               {/* LINHA ESQUERDA */}
               <View style={styles.footerLine} />
 
-              {/* LARANJA SS */}
+              {/* DETALHE VISUAL */}
               <Image
-                source={require('../../assets/home/laranja ss.png')}
+                source={require('../../assets/home/laranja.png')}
                 style={styles.footerOrange}
                 resizeMode="contain"
               />
