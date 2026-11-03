@@ -78,18 +78,12 @@ export const styles = StyleSheet.create({
     marginTop: -10,
   },
 
-  ssText: {
+  brandText: {
     color: colors.white,
     fontSize: 28,
-    lineHeight: 34,
+    lineHeight: 36,
     fontWeight: '800',
-  },
-
-  connectText: {
-    color: colors.white,
-    fontSize: 28,
-    lineHeight: 34,
-    fontWeight: '300',
+    letterSpacing: 0.4,
   },
 
   accentLine: {
