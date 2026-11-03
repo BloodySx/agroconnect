@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
-import { Image, Pressable, ScrollView, Text, View, ActivityIndicator, RefreshControl } from 'react-native';
+import { Pressable, ScrollView, Text, View, ActivityIndicator, RefreshControl } from 'react-native';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
@@ -112,11 +113,9 @@ export default function MyOrdersScreen() {
         {/* EMPTY STATE */}
         {orders.length === 0 ? (
           <View style={styles.emptyContainer}>
-            <Image
-              source={require('../../assets/home/planilha.png')}
-              style={styles.emptyIcon}
-              resizeMode="contain"
-            />
+            <View style={styles.emptyIcon}>
+              <MaterialCommunityIcons name="clipboard-text-outline" size={42} color="#5E9870" />
+            </View>
             <Text style={styles.emptyTitle}>Nenhum pedido ainda</Text>
             <Text style={styles.emptyText}>
               Você ainda não fez nenhum pedido.
