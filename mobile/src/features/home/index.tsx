@@ -1,6 +1,6 @@
-import { Alert, Image, Linking, ScrollView, Text, View } from 'react-native';
+import { Alert, Image, ScrollView, Text, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 
 import ActionGrid from './components/ActionGrid';
@@ -10,43 +10,17 @@ import { styles } from './styles';
 
 export default function HomeScreen() {
   const navigation = useNavigation();
-  const openingRef = useRef(false);
   // ESTADOS
   const [user] = useState({
     name: 'Guilherme',
   });
 
-  const openWhatsAppSupport = useCallback(async () => {
-    if (openingRef.current) return;
-    openingRef.current = true;
-
-    const phoneNumber = '5519971424105';
-    const message = 'Olá! Tenho uma dúvida sobre o aplicativo AgroConnect.';
-    const encodedMessage = encodeURIComponent(message);
-
-    const whatsappUrl = `whatsapp://send?phone=${phoneNumber}&text=${encodedMessage}`;
-    const fallbackUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
-
-    try {
-      const supported = await Linking.canOpenURL(whatsappUrl);
-      if (supported) {
-        await Linking.openURL(whatsappUrl);
-      } else {
-        await Linking.openURL(fallbackUrl);
-      }
-    } catch {
-      try {
-        await Linking.openURL(fallbackUrl);
-      } catch {
-        Alert.alert(
-          'Não foi possível abrir o WhatsApp',
-          'Entre em contato pelo número (19) 97142-4105.',
-          [{ text: 'OK' }]
-        );
-      }
-    } finally {
-      openingRef.current = false;
-    }
+  const openWhatsAppSupport = useCallback(() => {
+    Alert.alert(
+      'Suporte',
+      'O canal de atendimento do AgroConnect ainda não foi configurado.',
+      [{ text: 'OK' }]
+    );
   }, []);
 
   // ACTIONS
