@@ -6,7 +6,7 @@ WITH ranked_products AS (
 )
 UPDATE "Product" AS product
 SET
-  "name" = 'Insumo agrícola ' || LPAD(ranked_products.position::text, 2, '0'),
-  "code" = 'AGRO-' || LPAD(ranked_products.position::text, 3, '0')
+  "name" = 'Insumo agrícola ' || ranked_products.position::text,
+  "code" = 'AGRO-' || ranked_products.position::text
 FROM ranked_products
 WHERE product."id" = ranked_products."id";
