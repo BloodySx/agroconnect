@@ -1,5 +1,5 @@
 {
-  "name": "ss-connect-backend",
+  "name": "agroconnect-backend",
   "version": "1.0.0",
   "main": "dist/server.js",
   "scripts": {
