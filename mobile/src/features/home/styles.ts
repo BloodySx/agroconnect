@@ -370,11 +370,7 @@ footerLine: {
   backgroundColor: '#B8D1B8',
 },
 
-footerOrange: {
-  width: 42,
-  height: 42,
-  marginHorizontal: 14,
-},
+
 
 version: {
   color: '#8A9A8A',
