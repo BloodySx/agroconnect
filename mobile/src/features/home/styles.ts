@@ -112,7 +112,7 @@ infoIconProfile: {
   width: 52,
   height: 52,
   borderRadius: 26,
-  backgroundColor: '#FF9C31',
+  backgroundColor: '#397653',
   alignItems: 'center',
   justifyContent: 'center',
   marginRight: 10,
@@ -167,7 +167,7 @@ sectionTitleRow: {
 sectionAccent: {
   width: 5,
   height: 34,
-  backgroundColor: '#FF9C31',
+  backgroundColor: '#A7B88A',
   borderRadius: 4,
   marginRight: 11,
 },
@@ -272,7 +272,7 @@ actionTitleSecondary: {
 },
 
 badge: {
-  backgroundColor: '#FF9C31',
+  backgroundColor: '#A7B88A',
   paddingHorizontal: 10,
   paddingVertical: 4,
   borderRadius: 8,
@@ -300,7 +300,7 @@ actionArrow: {
   width: 50,
   height: 50,
   borderRadius: 25,
-  backgroundColor: '#FF9C31',
+  backgroundColor: '#A7B88A',
   alignItems: 'center',
   justifyContent: 'center',
   marginLeft: 12,
