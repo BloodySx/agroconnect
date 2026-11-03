@@ -24,74 +24,52 @@ export const styles = StyleSheet.create({
   header: {
     position: 'relative',
     alignItems: 'center',
+    justifyContent: 'center',
+    borderBottomLeftRadius: 34,
+    borderBottomRightRadius: 34,
+    overflow: 'hidden',
   },
-
-  headerBackground: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    width: '100%',
-    height: '100%',
-  },
-
-  headerLeaves: {
-    position: 'absolute',
-    width: 155,
-    height: 207,
-    right: -5,
-    bottom: 45,
-    zIndex: 0,
-    opacity: 0.35,
-    tintColor: 'rgba(255, 255, 255, 0.75)',
-    shadowColor: 'rgba(255, 255, 255, 0.6)',
-    shadowOffset: {
-      width: 0,
-      height: 0,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 20,
-    elevation: 2,
-    transform: [
-      {
-        rotate: '-27deg',
-      },
-    ],
-  },
-
-  // ================= HEADER CONTENT =================
 
   headerContent: {
-    position: 'relative',
     alignItems: 'center',
-    paddingTop: 54,
-    zIndex: 1,
+    justifyContent: 'center',
+    paddingTop: 12,
   },
 
-  logo: {
-    width: 315,
-    height: 220,
-  },
-
-  productName: {
-    flexDirection: 'row',
-    alignItems: 'baseline',
-    marginTop: -10,
+  brandMark: {
+    width: 88,
+    height: 88,
+    borderRadius: 28,
+    backgroundColor: 'rgba(255,255,255,0.14)',
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.24)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 18,
   },
 
   brandText: {
     color: colors.white,
-    fontSize: 28,
-    lineHeight: 36,
+    fontSize: 34,
+    lineHeight: 42,
     fontWeight: '800',
-    letterSpacing: 0.4,
+    letterSpacing: 0.2,
+  },
+
+  brandCaption: {
+    color: 'rgba(255,255,255,0.78)',
+    fontSize: 10,
+    fontWeight: '700',
+    letterSpacing: 2.2,
+    marginTop: 7,
   },
 
   accentLine: {
-    width: 60,
+    width: 52,
     height: 3,
     borderRadius: 2,
-    backgroundColor: '#FF9C31',
-    marginTop: 8,
+    backgroundColor: '#C7E6B8',
+    marginTop: 22,
   },
 
   // ================= FORM =================
