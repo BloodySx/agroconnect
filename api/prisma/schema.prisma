@@ -1,0 +1,135 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+model User {
+  id           String   @id @default(uuid())
+  name         String
+  email        String?  @unique
+  username     String?  @unique
+  passwordHash String
+  role         Role     @default(USER)
+  active       Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  orders Order[]
+  clientProductPrices ClientProductPrice[]
+}
+
+model Product {
+  id        String   @id @default(uuid())
+  name      String
+  code      String   @unique
+  active    Boolean  @default(true)
+  sachetBoxVolumeLiters Int @default(15)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  prices   ProductPrice[]
+  clientProductPrices ClientProductPrice[]
+  orderItems OrderItem[]
+}
+
+model Package {
+  id        String   @id @default(uuid())
+  name      String
+  type      String   @unique
+  capacity  String
+  capacityLiters Int?
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  prices   ProductPrice[]
+  clientProductPrices ClientProductPrice[]
+  orderItems OrderItem[]
+}
+
+model ProductPrice {
+  id        String   @id @default(uuid())
+  productId String
+  packageId String
+  price     Float
+  unit      String
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  package Package @relation(fields: [packageId], references: [id], onDelete: Cascade)
+
+  @@unique([productId, packageId])
+  @@index([productId])
+  @@index([packageId])
+}
+
+model ClientProductPrice {
+  id        String   @id @default(uuid())
+  userId    String
+  productId String
+  packageId String
+  price     Float
+  unit      String
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user    User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product Product      @relation(fields: [productId], references: [id], onDelete: Cascade)
+  package Package      @relation(fields: [packageId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, productId, packageId])
+  @@index([userId])
+  @@index([productId])
+  @@index([packageId])
+}
+
+model Order {
+  id             String   @id @default(uuid())
+  userId         String
+  status         String   @default("PENDING")
+  paymentTerm    String
+  deliveryTerm   String
+  totalValue     Float
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  user      User         @relation(fields: [userId], references: [id])
+  items     OrderItem[]
+
+  @@index([userId])
+  @@index([status])
+}
+
+model OrderItem {
+  id         String   @id @default(uuid())
+  orderId    String
+  productId  String
+  packageId  String
+  quantity   Int
+  unitPrice  Float
+  totalPrice Float
+  createdAt  DateTime @default(now())
+
+  order    Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product  Product  @relation(fields: [productId], references: [id])
+  package  Package  @relation(fields: [packageId], references: [id])
+
+  @@index([orderId])
+  @@index([productId])
+  @@index([packageId])
+}
+
