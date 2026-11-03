@@ -50,6 +50,16 @@ O projeto utiliza PostgreSQL com banco `agroconnect_db`.
    npx prisma db seed
    ```
 
+## Catálogo demonstrativo
+
+O catálogo inicial utiliza nomes genéricos de insumos agrícolas. A migration
+`20261103000000_anonymize_demo_catalog` substitui os nomes e códigos de registros
+já existentes por identificadores acadêmicos neutros, preservando os vínculos com
+preços e pedidos. Execute as migrations no banco local do AgroConnect antes de testar.
+
+O projeto não depende de marcas, catálogos, imagens comerciais ou dados de uma
+empresa específica. Utilize apenas usuários e dados fictícios no ambiente acadêmico.
+
 ## Iniciando a API
 
 ```bash
