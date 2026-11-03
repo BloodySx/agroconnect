@@ -59,10 +59,6 @@ export default function Login({ navigation }: Props) {
     Math.min(440, Math.max(375, height * 0.48))
   );
 
-  const footerArtworkHeight = Math.round(
-    Math.min(300, Math.max(260, height * 0.34))
-  );
-
   return (
     <View style={styles.container}>
 
