@@ -1,4 +1,5 @@
-import { Alert, Image, ScrollView, Text, View } from 'react-native';
+import { Alert, ScrollView, Text, View } from 'react-native';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useCallback, useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
@@ -27,7 +28,7 @@ export default function HomeScreen() {
   const actions = [
     {
       id: 1,
-      icon: require('../../assets/home/documento.png'),
+      icon: 'file-document-outline',
       title: 'Vamos Nessa!',
       description: '',
       highlighted: true,
@@ -35,14 +36,14 @@ export default function HomeScreen() {
     },
     {
       id: 2,
-      icon: require('../../assets/home/planilha.png'),
+      icon: 'clipboard-list-outline',
       title: 'Meus Pedidos',
       description: '',
       onPress: () => navigation.navigate('MyOrders' as never),
     },
     {
       id: 3,
-      icon: require('../../assets/home/fone.png'),
+      icon: 'lifebuoy',
       title: 'Suporte',
       description: '',
       onPress: openWhatsAppSupport,
@@ -80,11 +81,7 @@ export default function HomeScreen() {
                 Qual a boa?
               </Text>
 
-              <Image
-                source={require('../../assets/home/planta1.png')}
-                style={styles.sectionIcon}
-                resizeMode="contain"
-              />
+              <MaterialCommunityIcons name="sprout" size={34} color="#78A987" />
 
             </View>
           </View>
@@ -108,11 +105,7 @@ export default function HomeScreen() {
               <View style={styles.footerLine} />
 
               {/* DETALHE VISUAL */}
-              <Image
-                source={require('../../assets/home/laranja.png')}
-                style={styles.footerOrange}
-                resizeMode="contain"
-              />
+              <MaterialCommunityIcons name="leaf" size={26} color="#78A987" style={{ marginHorizontal: 14 }} />
 
               {/* LINHA DIREITA */}
               <View style={styles.footerLine} />
