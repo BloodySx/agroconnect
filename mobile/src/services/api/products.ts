@@ -1,5 +1,3 @@
-import { ImageSourcePropType } from 'react-native';
-
 import { Product } from '../../types/api';
 import {
   PackageType,
@@ -73,19 +71,6 @@ export const productService = {
     return data.filter((item) => item.active);
   },
 };
-
-export function getPackageImage(type: PackageType): ImageSourcePropType {
-  switch (type) {
-    case 'SACHÊ':
-      return require('../../assets/package/SACHE.png');
-    case 'BOMBONA_20L':
-      return require('../../assets/package/BB.png');
-    case 'IBC_1000L':
-      return require('../../assets/package/IBC.png');
-    default:
-      return require('../../assets/package/SACHE.png');
-  }
-}
 
 export function getPackageDescription(type: PackageType): string {
   if (type === 'SACHÊ') return 'Venda somente em caixas fechadas';
