@@ -1,7 +1,8 @@
 import { Alert, ScrollView, Text, View } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { authService } from '../../services/auth/auth.service';
 import { useNavigation } from '@react-navigation/native';
 
 import ActionGrid from './components/ActionGrid';
@@ -12,9 +13,13 @@ import { styles } from './styles';
 export default function HomeScreen() {
   const navigation = useNavigation();
   // ESTADOS
-  const [user] = useState({
-    name: 'Guilherme',
-  });
+  const [userName, setUserName] = useState('Produtor');
+
+  useEffect(() => {
+    authService.getMe().then((user) => {
+      if (user.name?.trim()) setUserName(user.name.trim().split(' ')[0]);
+    }).catch(() => undefined);
+  }, []);
 
   const openWhatsAppSupport = useCallback(() => {
     Alert.alert(
@@ -29,7 +34,7 @@ export default function HomeScreen() {
     {
       id: 1,
       icon: 'file-document-outline',
-      title: 'Vamos Nessa!',
+      title: 'Nova cotação',
       description: '',
       highlighted: true,
       onPress: () => navigation.navigate('NewQuotation' as never),
@@ -48,7 +53,7 @@ export default function HomeScreen() {
       description: '',
       onPress: openWhatsAppSupport,
     },
-  ];
+  ] as const;
 
   return (
     <View style={styles.container}>
@@ -69,7 +74,7 @@ export default function HomeScreen() {
         >
 
           {/* HEADER */}
-          <Header userName={user.name} />
+          <Header userName={userName} />
 
           {/* TÍTULO */}
           <View style={styles.section}>
@@ -78,7 +83,7 @@ export default function HomeScreen() {
               <View style={styles.sectionAccent} />
 
               <Text style={styles.sectionTitle}>
-                Qual a boa?
+                O que você deseja fazer?
               </Text>
 
               <MaterialCommunityIcons name="sprout" size={34} color="#78A987" />
