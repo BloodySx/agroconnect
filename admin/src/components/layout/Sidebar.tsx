@@ -36,7 +36,7 @@ export function Sidebar({ open, onNavigate }: { open: boolean; onNavigate: () =>
       aria-label="Navegação principal"
     >
       <div className="sidebar__brand">
-        <div className="sidebar__logo">SS</div>
+        <div className="sidebar__logo">AG</div>
         <div>
           <div className="sidebar__brand-name">AgroConnect</div>
           <div className="sidebar__brand-sub">Painel Administrativo</div>
