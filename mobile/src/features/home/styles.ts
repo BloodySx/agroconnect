@@ -21,48 +21,41 @@ export const styles = StyleSheet.create({
 header: {
   position: 'relative',
   width: '100%',
-  height: 170,
-  backgroundColor: '#E8F4EA',
+  height: 214,
+  borderBottomLeftRadius: 30,
+  borderBottomRightRadius: 30,
   overflow: 'hidden',
-},
-
-headerBackground: {
-  position: 'absolute',
-  top: 0,
-  left: 0,
-  width: '100%',
-  height: '100%',
-  resizeMode: 'cover',
+  justifyContent: 'flex-end',
 },
 
 // ================= HEADER CONTENT =================
 
 headerContent: {
   position: 'absolute',
-  top: 105,
-  left: 39,
-  right: 30,
+  top: 118,
+  left: 26,
+  right: 26,
   zIndex: 2,
 },
 
 greeting: {
   fontSize: 20,
   fontWeight: '700',
-  color: '#2D5A3D',
+  color: '#FFFFFF',
   marginBottom: 4,
 },
 
 headerSubtitle: {
   fontSize: 13,
   fontWeight: '400',
-  color: '#5A6B5A',
+  color: 'rgba(255,255,255,0.78)',
   marginBottom: 8,
 },
 
 headerDivider: {
   width: 34,
   height: 2,
-  backgroundColor: '#78B47F',
+  backgroundColor: '#C7E6B8',
   borderRadius: 1,
 },
 
@@ -211,9 +204,9 @@ actionGrid: {
 
 actionItem: {
   flexDirection: 'row',
-  borderRadius: 22,
-  paddingHorizontal: 18,
-  paddingVertical: 12,
+  borderRadius: 20,
+  paddingHorizontal: 16,
+  paddingVertical: 14,
   marginBottom: 14,
   ...shadows.sm,
   alignItems: 'center',
@@ -222,9 +215,9 @@ actionItem: {
 },
 
 actionItemHighlighted: {
-  backgroundColor: '#78B47F',
+  backgroundColor: '#2F6B4C',
   borderWidth: 1,
-  borderColor: '#6FA877',
+  borderColor: '#2F6B4C',
 },
 
 actionItemSecondary: {
@@ -234,13 +227,13 @@ actionItemSecondary: {
 },
 
 actionIconContainer: {
-  width: 90,
-  height: 90,
-  borderRadius: 22,
+  width: 58,
+  height: 58,
+  borderRadius: 18,
   backgroundColor: '#EDF6ED',
   alignItems: 'center',
   justifyContent: 'center',
-  marginRight: 18,
+  marginRight: 14,
 },
 
 actionIconContainerHighlighted: {
@@ -248,8 +241,8 @@ actionIconContainerHighlighted: {
 },
 
 actionIcon: {
-  width: 130,
-  height: 130,
+  width: 42,
+  height: 42,
 },
 
 actionIconHighlighted: {
