@@ -2,7 +2,6 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useState, useCallback } from 'react';
 import {
   Alert,
-  Image,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
@@ -12,6 +11,8 @@ import {
 } from 'react-native';
 
 import { ActivityIndicator } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 import Button from '../../components/Button';
 import TextField from '../../components/TextField';
@@ -79,42 +80,21 @@ export default function Login({ navigation }: Props) {
 
           {/* ================= HEADER ================= */}
 
-          <View
-            style={[
-              styles.header,
-              { height: headerHeight },
-            ]}
+          <LinearGradient
+            colors={['#163F31', '#2F6B4C', '#6FA66F']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={[styles.header, { height: headerHeight }]}
           >
-            <Image
-              source={require('../../assets/login/header-background.png')}
-              style={styles.headerBackground}
-              resizeMode="stretch"
-            />
-
-            <View pointerEvents="none">
-              <Image
-                source={require('../../assets/images/folha header.png')}
-                style={styles.headerLeaves}
-                resizeMode="cover"
-              />
-            </View>
-
             <View style={styles.headerContent}>
-              <Image
-                source={require('../../assets/logo/logo.png')}
-                style={styles.logo}
-                resizeMode="contain"
-              />
-
-              <View style={styles.productName}>
-                <Text style={styles.brandText}>
-                  AgroConnect
-                </Text>
+              <View style={styles.brandMark}>
+                <MaterialCommunityIcons name="sprout" size={48} color="#FFFFFF" />
               </View>
-
+              <Text style={styles.brandText}>AgroConnect</Text>
+              <Text style={styles.brandCaption}>TECNOLOGIA PARA O CAMPO</Text>
               <View style={styles.accentLine} />
             </View>
-          </View>
+          </LinearGradient>
 
           {/* ================= FORM ================= */}
 
@@ -178,14 +158,7 @@ export default function Login({ navigation }: Props) {
             {/* ================= VERSÃO ================= */}
 
             <View style={styles.versionArea}>
-              <View pointerEvents="none">
-                <Image
-                  source={require('../../assets/images/folha centralizada - footer.png')}
-                  style={styles.footerDivider}
-                  resizeMode="contain"
-                />
-              </View>
-
+              <MaterialCommunityIcons name="leaf" size={28} color="#78A987" />
               <Text style={styles.version}>
                 Versão 0.1
               </Text>
