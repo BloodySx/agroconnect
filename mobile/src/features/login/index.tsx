@@ -107,12 +107,8 @@ export default function Login({ navigation }: Props) {
               />
 
               <View style={styles.productName}>
-                <Text style={styles.ssText}>
-                  SS
-                </Text>
-
-                <Text style={styles.connectText}>
-                  {' '}Connect
+                <Text style={styles.brandText}>
+                  AgroConnect
                 </Text>
               </View>
 
