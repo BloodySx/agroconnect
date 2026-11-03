@@ -50,7 +50,7 @@ export function LoginPage() {
     <div className="login-shell">
       <div className="login-hero">
         <div className="login-hero__brand">
-          <div className="login-hero__logo">SS</div>
+          <div className="login-hero__logo">AG</div>
 AgroConnect
         </div>
         <div>
