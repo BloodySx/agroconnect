@@ -1817,3 +1817,229 @@ textarea:focus-visible,
     transition-duration: 0.01ms !important;
   }
 }
+
+
+/* ---------- AgroConnect visual system ---------- */
+:root {
+  --color-bg: #f3f7f2;
+  --color-surface: #ffffff;
+  --color-surface-alt: #f7faf6;
+  --color-border: #e3ebe2;
+  --color-border-strong: #cfdbcf;
+  --color-text: #1d3327;
+  --color-text-muted: #66786c;
+  --color-text-faint: #94a399;
+  --color-primary: #2f6b4c;
+  --color-primary-hover: #24583e;
+  --color-primary-soft: #e8f2e9;
+  --color-primary-contrast: #ffffff;
+  --color-sidebar: #173f32;
+  --color-sidebar-hover: #245542;
+  --color-sidebar-active: #397653;
+  --color-sidebar-text: #e1eee5;
+  --color-sidebar-text-muted: #a6c1ae;
+  --color-success: #2f855a;
+  --color-success-soft: #e8f5ec;
+  --color-warning: #b7791f;
+  --color-warning-soft: #fbf2df;
+  --color-danger: #c53030;
+  --color-danger-soft: #fceaea;
+  --color-info: #3976a8;
+  --color-info-soft: #e9f2fa;
+  --radius-sm: 9px;
+  --radius: 13px;
+  --radius-lg: 18px;
+  --shadow-sm: 0 2px 8px rgba(25, 59, 40, .045);
+  --shadow: 0 8px 24px rgba(25, 59, 40, .075);
+  --shadow-lg: 0 20px 48px rgba(25, 59, 40, .14);
+  --font-sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-text);
+  letter-spacing: -0.01em;
+}
+
+.sidebar {
+  background: linear-gradient(180deg, #173f32 0%, #123629 100%);
+  box-shadow: 8px 0 28px rgba(20, 55, 39, .08);
+}
+
+.sidebar__logo {
+  background: linear-gradient(145deg, #8dbb8b, #397653);
+  border: 1px solid rgba(255,255,255,.18);
+  box-shadow: 0 7px 18px rgba(0,0,0,.12);
+  border-radius: 13px;
+}
+
+.nav-item {
+  min-height: 43px;
+  border-radius: 11px;
+  transition: background .18s ease, transform .18s ease, color .18s ease;
+}
+
+.nav-item:hover {
+  transform: translateX(2px);
+}
+
+.nav-item--active {
+  box-shadow: inset 3px 0 0 #c7e6b8;
+}
+
+.header {
+  background: rgba(255,255,255,.92);
+  backdrop-filter: blur(14px);
+  border-bottom-color: #e5ece4;
+  padding-inline: 30px;
+}
+
+.content {
+  padding: 30px;
+}
+
+.card {
+  border-color: #e4ece3;
+  border-radius: 18px;
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  transition: box-shadow .18s ease, transform .18s ease;
+}
+
+.card__header {
+  padding: 20px 22px;
+  background: linear-gradient(180deg, #fff, #fcfefb);
+}
+
+.card__body {
+  padding: 22px;
+}
+
+.kpi {
+  border-radius: 18px;
+  padding: 20px;
+}
+
+.kpi__icon {
+  border-radius: 13px;
+}
+
+.btn {
+  border-radius: 10px;
+  min-height: 40px;
+  transition: background .18s ease, border-color .18s ease, box-shadow .18s ease, transform .18s ease;
+}
+
+.btn--primary {
+  box-shadow: 0 5px 12px rgba(47, 107, 76, .16);
+}
+
+.btn--primary:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 18px rgba(47, 107, 76, .2);
+}
+
+.input, .select {
+  border-radius: 10px;
+  min-height: 43px;
+  border-color: #d7e2d7;
+}
+
+.input:focus, .select:focus {
+  border-color: #6b9c78;
+  box-shadow: 0 0 0 4px rgba(47, 107, 76, .1);
+}
+
+.table thead th {
+  background: #f5f9f4;
+  color: #65786b;
+  letter-spacing: .06em;
+}
+
+.table tbody tr:hover {
+  background: #f7faf6;
+}
+
+.login-shell {
+  background: #f3f7f2;
+  grid-template-columns: minmax(0, 1.05fr) minmax(420px, .95fr);
+}
+
+.login-hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background: linear-gradient(145deg, #173f32 0%, #2f6b4c 58%, #79a987 100%);
+  padding: clamp(38px, 6vw, 76px);
+}
+
+.login-hero::before,
+.login-hero::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  border: 1px solid rgba(255,255,255,.13);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.login-hero::before {
+  width: 520px;
+  height: 520px;
+  right: -190px;
+  top: -170px;
+  box-shadow: 0 0 0 34px rgba(255,255,255,.035), 0 0 0 72px rgba(255,255,255,.025);
+}
+
+.login-hero::after {
+  width: 340px;
+  height: 340px;
+  left: -170px;
+  bottom: -160px;
+  box-shadow: 0 0 0 28px rgba(255,255,255,.035);
+}
+
+.login-hero__logo {
+  background: rgba(255,255,255,.14);
+  border: 1px solid rgba(255,255,255,.22);
+  border-radius: 15px;
+  backdrop-filter: blur(10px);
+}
+
+.login-hero h2 {
+  max-width: 540px;
+  font-size: clamp(30px, 3.4vw, 44px);
+  letter-spacing: -.035em;
+}
+
+.login-hero p {
+  line-height: 1.75;
+  max-width: 460px;
+}
+
+.login-form-side {
+  background: #f3f7f2;
+}
+
+.login-card {
+  border: 1px solid #e2ebe1;
+  border-radius: 22px;
+  padding: clamp(28px, 4vw, 42px);
+  background: #fff;
+  box-shadow: 0 18px 50px rgba(24, 59, 39, .08);
+}
+
+@media (max-width: 900px) {
+  .content { padding: 22px; }
+  .login-shell { grid-template-columns: 1fr; }
+  .login-hero { min-height: 260px; padding: 32px; gap: 34px; }
+  .login-hero__footer { display: none; }
+}
+
+@media (max-width: 640px) {
+  .content { padding: 16px; }
+  .header { padding-inline: 16px; }
+  .login-form-side { padding: 18px; }
+  .login-hero { min-height: 220px; padding: 24px; }
+  .login-hero h2 { font-size: 27px; }
+}
