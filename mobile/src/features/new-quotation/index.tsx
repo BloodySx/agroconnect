@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react';
-import { Image, Pressable, ScrollView, Text, View, Alert, RefreshControl, ActivityIndicator } from 'react-native';
+import { Pressable, ScrollView, Text, View, Alert, RefreshControl, ActivityIndicator } from 'react-native';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useFocusEffect } from '@react-navigation/native';
@@ -139,14 +140,11 @@ export default function NewQuotationScreen() {
                     isSelected && styles.productIconContainerSelected,
                   ]}
                 >
-                  <Text
-                    style={[
-                      styles.productIconText,
-                      isSelected && styles.productIconTextSelected,
-                    ]}
-                  >
-                    {product.name.charAt(0)}
-                  </Text>
+                  <MaterialCommunityIcons
+                    name="sprout"
+                    size={28}
+                    color={isSelected ? '#FFFFFF' : '#397653'}
+                  />
                 </View>
 
                 {/* Informações do produto */}
