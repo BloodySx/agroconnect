@@ -1,5 +1,6 @@
 ﻿import { useCallback, useEffect, useState, useRef } from 'react';
-import { ActivityIndicator, Image, Pressable, RefreshControl, ScrollView, Text, View } from 'react-native';
+import { ActivityIndicator, Pressable, RefreshControl, ScrollView, Text, View } from 'react-native';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useFocusEffect } from '@react-navigation/native';
@@ -14,7 +15,6 @@ import {
 } from '../quotation-flow';
 import {
   getPackageDescription,
-  getPackageImage,
   productService,
 } from '../../../services/api/products';
 import ProgressIndicator from '../components/ProgressIndicator';
@@ -199,7 +199,11 @@ export default function PackageSelectionScreen() {
                 style={[styles.packageCard, isSelected && styles.packageCardSelected]}
               >
                 <View style={[styles.packageIconContainer, isSelected && styles.packageIconContainerSelected]}>
-                  <Image source={getPackageImage(package_.type)} style={styles.packageIcon} resizeMode="contain" />
+                  <MaterialCommunityIcons
+                    name={package_.type === 'SACHÊ' ? 'package-variant' : package_.type === 'BOMBONA_20L' ? 'archive-outline' : 'cube-outline'}
+                    size={42}
+                    color={isSelected ? '#2F6B4C' : '#6C9877'}
+                  />
                 </View>
 
                 <View style={styles.packageInfo}>
