@@ -60,8 +60,8 @@ export const styles = StyleSheet.create({
 
   /* ÍCONE DA EMBALAGEM */
   packageIconContainer: {
-    width: 82,
-    height: 82,
+    width: 64,
+    height: 64,
     borderRadius: 18,
     backgroundColor: 'transparent',
     alignItems: 'center',
@@ -76,8 +76,8 @@ export const styles = StyleSheet.create({
     backgroundColor: '#EAF4EA',
   },
   packageIcon: {
-    width: 72,
-    height: 72,
+    width: 42,
+    height: 42,
   },
 
   /* INFORMAÇÕES DA EMBALAGEM */
