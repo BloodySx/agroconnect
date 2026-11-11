@@ -268,6 +268,7 @@ export default function MyOrdersScreen() {
             <ScrollView
               horizontal
               showsHorizontalScrollIndicator={false}
+              style={styles.filtersScroll}
               contentContainerStyle={styles.filters}
             >
               {FILTERS.map((option) => {
