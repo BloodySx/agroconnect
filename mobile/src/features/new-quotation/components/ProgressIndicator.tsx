@@ -28,44 +28,38 @@ export default function ProgressIndicator({
     paymentTermProgressValue || paymentTermValue,
     undefined,
   ];
+  const safeCurrentStep = Math.max(1, Math.min(STEP_LABELS.length, currentStep));
+  const progressWidth = `${((safeCurrentStep - 1) / (STEP_LABELS.length - 1)) * 100}%`;
 
   return (
     <View
       style={styles.container}
       accessibilityRole="progressbar"
-      accessibilityLabel={`Etapa ${currentStep} de 5: ${STEP_LABELS[currentStep - 1] ?? 'Cotação'}`}
+      accessibilityValue={{
+        min: 1,
+        max: STEP_LABELS.length,
+        now: safeCurrentStep,
+      }}
+      accessibilityLabel={`Etapa ${safeCurrentStep} de ${STEP_LABELS.length}: ${STEP_LABELS[safeCurrentStep - 1]}`}
     >
       <View style={styles.progressRow}>
+        <View pointerEvents="none" style={styles.progressTrack} />
+        <View pointerEvents="none" style={[styles.progressTrackActive, { width: progressWidth }]} />
+
         {STEP_LABELS.map((label, index) => {
           const stepNumber = index + 1;
-          const isReached = stepNumber <= currentStep;
-          const isCurrent = stepNumber === currentStep;
-          const isFirst = index === 0;
-          const isLast = index === STEP_LABELS.length - 1;
+          const isReached = stepNumber <= safeCurrentStep;
+          const isCurrent = stepNumber === safeCurrentStep;
           const detail = values[index];
 
           return (
             <View key={label} style={styles.stepColumn}>
-              <View style={styles.stepCircleRow}>
-                <View
-                  style={[
-                    styles.stepLine,
-                    isReached && styles.stepLineActive,
-                    isFirst && styles.stepLineInvisible,
-                  ]}
-                />
+              <View style={styles.stepMarkerRow}>
                 <View
                   style={[
                     styles.stepCircle,
                     isReached && styles.stepCircleReached,
                     isCurrent && styles.stepCircleCurrent,
-                  ]}
-                />
-                <View
-                  style={[
-                    styles.stepLine,
-                    stepNumber < currentStep && styles.stepLineActive,
-                    isLast && styles.stepLineInvisible,
                   ]}
                 />
               </View>
@@ -79,7 +73,7 @@ export default function ProgressIndicator({
               >
                 {label}
               </Text>
-              {!!detail && stepNumber < currentStep && (
+              {!!detail && stepNumber < safeCurrentStep && (
                 <Text style={styles.stepDetail} numberOfLines={1}>
                   {detail}
                 </Text>
