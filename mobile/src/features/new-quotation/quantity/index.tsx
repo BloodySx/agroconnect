@@ -1,5 +1,14 @@
 import { useCallback, useId, useRef, useState } from 'react';
-import { Keyboard, Platform, Pressable, ScrollView, Text, TextInput, View, InputAccessoryView } from 'react-native';
+import {
+  InputAccessoryView,
+  Keyboard,
+  Platform,
+  Pressable,
+  ScrollView,
+  Text,
+  TextInput,
+  View,
+} from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -36,14 +45,16 @@ export default function QuantityScreen() {
   const handleContinue = useCallback(() => {
     Keyboard.dismiss();
     const submission = submitQuantity(quotation, inputQuantity);
+
     if (!submission.ok) {
       setQuantityError(submission.message);
       return;
     }
+
     setQuantityError(null);
 
     if (isAddingAnotherProduct && draftPaymentTerm) {
-      const termProgress = paymentTerms.find(t => t.display === draftPaymentTerm)?.progressValue || '28';
+      const termProgress = paymentTerms.find((term) => term.display === draftPaymentTerm)?.progressValue || '28';
       const confirmable = addPaymentTerm(submission.value, draftPaymentTerm, termProgress);
       navigation.navigate('Summary', { quotation: confirmable });
     } else {
@@ -65,10 +76,7 @@ export default function QuantityScreen() {
     ? null
     : Number((validQuantity * quotation.package.pricePerLiter).toFixed(2));
   const packageName = getPackageDisplayName(quotation.package);
-
-  // Real-time validation error for Sachê: show immediately when invalid
   const showRealTimeError = validation.kind === 'invalid' && inputQuantity !== '';
-
   const realTimeErrorMessage = showRealTimeError ? validation.message : null;
 
   const handleBack = () => {
@@ -80,17 +88,24 @@ export default function QuantityScreen() {
   };
 
   return (
-    <QuotationLayout
-      subtitle="Informe a quantidade"
-      showBackButton={true}
-      onBack={handleBack}
-    >
+    <QuotationLayout showBackButton onBack={handleBack}>
       <ScrollView
         contentContainerStyle={styles.scrollContent}
         keyboardShouldPersistTaps="handled"
         keyboardDismissMode="interactive"
         showsVerticalScrollIndicator={false}
       >
+        <View style={styles.intro}>
+          <View style={styles.eyebrow}>
+            <View style={styles.eyebrowDot} />
+            <Text style={styles.eyebrowText}>NOVA COTAÇÃO · ETAPA 03</Text>
+          </View>
+          <Text style={styles.pageTitle}>Informe a quantidade</Text>
+          <Text style={styles.pageDescription}>
+            Digite o volume em litros para calcular o valor estimado da sua cotação.
+          </Text>
+        </View>
+
         <ProgressIndicator
           currentStep={3}
           product={quotation.product.name}
@@ -99,38 +114,54 @@ export default function QuantityScreen() {
         />
 
         <View style={styles.summaryCard}>
-          <Text style={styles.productName}>
-            {quotation.product.name}
-          </Text>
-
-          <View style={styles.packagingHeader}>
-            <View style={styles.packagingIcon}>
-              <MaterialCommunityIcons
-                name={quotation.package.type === 'SACHÊ' ? 'package-variant' : quotation.package.type === 'BOMBONA_20L' ? 'archive-outline' : 'cube-outline'}
-                size={40}
-                color="#397653"
-              />
+          <View style={styles.summaryTop}>
+            <View style={styles.summaryIcon}>
+              <MaterialCommunityIcons name="sprout" size={22} color="#376F4A" />
             </View>
-
-            <Text style={styles.packagingName}>
-              {getPackageDisplayName(quotation.package)}
-            </Text>
+            <View style={styles.summaryCopy}>
+              <Text style={styles.summaryEyebrow}>PRODUTO SELECIONADO</Text>
+              <Text style={styles.productName} numberOfLines={2}>
+                {quotation.product.name}
+              </Text>
+            </View>
           </View>
 
-          <Text style={styles.unitPrice}>
-            {formatCurrency(quotation.package.pricePerLiter)} por litro
-          </Text>
+          <View style={styles.summaryDivider} />
+
+          <View style={styles.packageLine}>
+            <MaterialCommunityIcons
+              name={
+                quotation.package.type === 'SACHÊ'
+                  ? 'package-variant'
+                  : quotation.package.type === 'BOMBONA_20L'
+                    ? 'archive-outline'
+                    : 'cube-outline'
+              }
+              size={18}
+              color="#66816A"
+            />
+            <Text style={styles.packagingName}>{packageName}</Text>
+            <Text style={styles.unitPrice}>{formatCurrency(quotation.package.pricePerLiter)} / L</Text>
+          </View>
         </View>
 
-        <View style={styles.quantitySection}>
-          <Text style={styles.quantityTitle}>
-            Quantidade em litros
-          </Text>
-          <View style={{ marginTop: 12 }}>
+        <View style={styles.quantityCard}>
+          <View style={styles.quantityHeader}>
+            <View style={styles.quantityIcon}>
+              <MaterialCommunityIcons name="flask-outline" size={20} color="#3B7652" />
+            </View>
+            <View style={styles.quantityHeaderCopy}>
+              <Text style={styles.quantityTitle}>Quantidade em litros</Text>
+              <Text style={styles.quantitySubtitle}>Informe apenas números inteiros</Text>
+            </View>
+          </View>
+
+          <View style={[styles.inputShell, !!quantityError && styles.inputShellError, !!realTimeErrorMessage && !quantityError && styles.inputShellError]}>
             <TextInput
               ref={quantityInputRef}
               style={styles.quantityInput}
-              placeholder="0"
+              placeholder="Ex.: 500"
+              placeholderTextColor="#A1ACA1"
               keyboardType="numeric"
               value={inputQuantity}
               onChangeText={(text) => {
@@ -144,39 +175,45 @@ export default function QuantityScreen() {
               inputAccessoryViewID={Platform.OS === 'ios' ? accessoryViewId : undefined}
               returnKeyType={Platform.OS === 'ios' ? 'none' : 'done'}
               onSubmitEditing={handleKeyboardDismiss}
-              blurOnSubmit={true}
+              blurOnSubmit
             />
-            {quantityError && (
-              <Text style={[styles.quantityError, { color: colors.error }]}>
-                {quantityError}
-              </Text>
-            )}
-            {realTimeErrorMessage && !quantityError && (
-              <Text style={[styles.quantityError, { color: colors.error }]}>
-                {realTimeErrorMessage}
-              </Text>
-            )}
+            <Text style={styles.inputUnit}>L</Text>
           </View>
+
+          {quantityError && <Text style={styles.quantityError}>{quantityError}</Text>}
+          {realTimeErrorMessage && !quantityError && (
+            <Text style={styles.quantityError}>{realTimeErrorMessage}</Text>
+          )}
         </View>
 
         <View style={styles.estimatedValueSection}>
-          <Text style={styles.estimatedTitle}>
-            Valor estimado
-          </Text>
+          <View style={styles.estimatedCopy}>
+            <Text style={styles.estimatedTitle}>VALOR ESTIMADO</Text>
+            <Text style={styles.estimatedCaption}>Calculado com o preço atual por litro</Text>
+          </View>
           <Text style={styles.estimatedValue}>
             {total === null ? '—' : formatCurrency(total)}
           </Text>
         </View>
 
-        <Pressable
-          onPress={handleContinue}
-          disabled={!validQuantity}
-          style={styles.continueButton}
-        >
-          <Text style={styles.continueButtonText}>
-            Continuar
+        <View style={styles.footer}>
+          <Pressable
+            onPress={handleContinue}
+            disabled={!validQuantity}
+            accessibilityRole="button"
+            style={({ pressed }) => [
+              styles.continueButton,
+              !validQuantity && styles.continueButtonDisabled,
+              pressed && validQuantity && styles.continueButtonPressed,
+            ]}
+          >
+            <Text style={styles.continueButtonText}>Continuar</Text>
+            <MaterialCommunityIcons name="arrow-right" size={20} color="#FFFFFF" />
+          </Pressable>
+          <Text style={styles.footerHint}>
+            {validQuantity ? 'Quantidade válida. Você pode avançar.' : 'Preencha a quantidade para continuar.'}
           </Text>
-        </Pressable>
+        </View>
       </ScrollView>
 
       {Platform.OS === 'ios' && (
@@ -190,7 +227,7 @@ export default function QuantityScreen() {
               accessibilityLabel="Fechar teclado"
               hitSlop={{ top: 8, bottom: 8, left: 12, right: 12 }}
             >
-              <Text style={styles.accessoryButtonText}>Confirmar</Text>
+              <Text style={styles.accessoryButtonText}>Concluir</Text>
             </Pressable>
           </View>
         </InputAccessoryView>
