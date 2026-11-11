@@ -87,7 +87,7 @@ export default function HomeScreen() {
             style={({ pressed }) => [styles.featuredCard, pressed && styles.pressed]}
           >
             <LinearGradient
-              colors={['#347653', '#1D4D38']}
+              colors={['#F7F2E8', '#EAE3D4']}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
               style={styles.featuredGradient}
@@ -116,7 +116,7 @@ export default function HomeScreen() {
               <MaterialCommunityIcons
                 name="sprout"
                 size={120}
-                color="rgba(255,255,255,0.07)"
+                color="rgba(47,107,76,0.085)"
                 style={styles.featuredDecoration}
               />
             </LinearGradient>
