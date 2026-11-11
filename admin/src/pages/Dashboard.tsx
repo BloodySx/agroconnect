@@ -5,20 +5,30 @@ import type { DashboardResponse } from '../types';
 import { AdminLayout } from '../components/layout/AdminLayout';
 import { PageHeader } from '../components/PageHeader';
 import { StatusBadge, LoadingState, EmptyState, ErrorState } from '../components/ui';
-import { IconDashboard, IconOrders, IconBox, IconTag, IconUsers, IconEye } from '../components/icons';
+import {
+  IconDashboard,
+  IconOrders,
+  IconBox,
+  IconTag,
+  IconUsers,
+  IconEye,
+  IconCheck,
+  IconX,
+} from '../components/icons';
 import { formatCurrency, formatDate } from '../utils/format';
 
-interface CardDef {
+interface MetricCard {
   label: string;
   value: string;
+  note: string;
+  tone: 'total' | 'pending' | 'confirmed' | 'completed' | 'cancelled' | 'value';
   icon: React.ReactNode;
-  cls: string;
 }
 
-interface StatusSegment {
+interface StatusItem {
   label: string;
   count: number;
-  cls: string;
+  tone: 'pending' | 'confirmed' | 'completed' | 'cancelled';
 }
 
 export function DashboardPage() {
@@ -31,8 +41,8 @@ export function DashboardPage() {
     setLoading(true);
     setError(null);
     try {
-      const res = await api.get<DashboardResponse>('/admin/dashboard');
-      setData(res);
+      const response = await api.get<DashboardResponse>('/admin/dashboard');
+      setData(response);
     } catch (err) {
       if (err instanceof ApiClientError && err.status === 401) {
         setError('Sessão expirada. Faça login novamente.');
@@ -48,163 +58,229 @@ export function DashboardPage() {
     load();
   }, [load]);
 
-  const cards: CardDef[] = data
+  const metrics: MetricCard[] = data
     ? [
-        { label: 'Total de pedidos', value: String(data.summary.totalOrders), icon: <IconOrders />, cls: 'badge--confirmed' },
-        { label: 'Pendentes', value: String(data.summary.pending), icon: <IconDashboard />, cls: 'badge--pending' },
-        { label: 'Confirmados', value: String(data.summary.confirmed), icon: <IconOrders />, cls: 'badge--confirmed' },
-        { label: 'Concluídos', value: String(data.summary.completed), icon: <IconOrders />, cls: 'badge--completed' },
-        { label: 'Cancelados', value: String(data.summary.cancelled), icon: <IconOrders />, cls: 'badge--cancelled' },
-        { label: 'Valor total', value: formatCurrency(data.summary.totalValue), icon: <IconTag />, cls: 'badge--confirmed' },
+        {
+          label: 'Total de pedidos',
+          value: String(data.summary.totalOrders),
+          note: 'Todos os registros',
+          tone: 'total',
+          icon: <IconOrders size={20} />,
+        },
+        {
+          label: 'Pendentes',
+          value: String(data.summary.pending),
+          note: 'Aguardando análise',
+          tone: 'pending',
+          icon: <IconDashboard size={20} />,
+        },
+        {
+          label: 'Confirmados',
+          value: String(data.summary.confirmed),
+          note: 'Em andamento',
+          tone: 'confirmed',
+          icon: <IconCheck size={20} />,
+        },
+        {
+          label: 'Concluídos',
+          value: String(data.summary.completed),
+          note: 'Finalizados',
+          tone: 'completed',
+          icon: <IconOrders size={20} />,
+        },
+        {
+          label: 'Cancelados',
+          value: String(data.summary.cancelled),
+          note: 'Fora da operação',
+          tone: 'cancelled',
+          icon: <IconX size={20} />,
+        },
+        {
+          label: 'Valor total',
+          value: formatCurrency(data.summary.totalValue),
+          note: 'Volume dos pedidos',
+          tone: 'value',
+          icon: <IconTag size={20} />,
+        },
       ]
     : [];
 
-  const segments: StatusSegment[] = data
+  const statuses: StatusItem[] = data
     ? [
-        { label: 'Pendentes', count: data.summary.pending, cls: 'badge--pending' },
-        { label: 'Confirmados', count: data.summary.confirmed, cls: 'badge--confirmed' },
-        { label: 'Concluídos', count: data.summary.completed, cls: 'badge--completed' },
-        { label: 'Cancelados', count: data.summary.cancelled, cls: 'badge--cancelled' },
+        { label: 'Pendentes', count: data.summary.pending, tone: 'pending' },
+        { label: 'Confirmados', count: data.summary.confirmed, tone: 'confirmed' },
+        { label: 'Concluídos', count: data.summary.completed, tone: 'completed' },
+        { label: 'Cancelados', count: data.summary.cancelled, tone: 'cancelled' },
       ]
     : [];
-  const maxSegment = Math.max(1, ...segments.map((s) => s.count));
-  const statusTotal = segments.reduce((acc, s) => acc + s.count, 0);
+
+  const statusTotal = statuses.reduce((total, status) => total + status.count, 0);
 
   const shortcuts = [
-    { label: 'Pedidos', to: '/admin/orders', icon: <IconOrders /> },
-    { label: 'Produtos', to: '/admin/products', icon: <IconBox /> },
-    { label: 'Preços', to: '/admin/prices', icon: <IconTag /> },
-    { label: 'Usuários', to: '/admin/users', icon: <IconUsers /> },
-  ];
+    { label: 'Pedidos', description: 'Acompanhe solicitações', to: '/admin/orders', icon: <IconOrders size={21} />, tone: 'green' },
+    { label: 'Produtos', description: 'Gerencie o catálogo', to: '/admin/products', icon: <IconBox size={21} />, tone: 'sand' },
+    { label: 'Preços', description: 'Consulte e atualize valores', to: '/admin/prices', icon: <IconTag size={21} />, tone: 'sage' },
+    { label: 'Usuários', description: 'Gerencie os acessos', to: '/admin/users', icon: <IconUsers size={21} />, tone: 'green' },
+  ] as const;
 
   return (
     <AdminLayout title="Dashboard" subtitle="Visão geral da operação do AgroConnect">
-      <PageHeader title="Dashboard" subtitle="Visão geral da operação do AgroConnect" />
+      <div className="dashboard-page">
+        <PageHeader title="Dashboard" subtitle="Visão geral da operação do AgroConnect" />
 
-      {loading ? (
-        <LoadingState label="Carregando indicadores..." />
-      ) : error ? (
-        <div className="card">
-          <ErrorState message={error} onRetry={load} />
-        </div>
-      ) : (
-        data && (
-          <>
-            <div className="kpi-row">
-              {cards.map((card) => (
-                <div key={card.label} className="card kpi">
-                  <div className="kpi__top">
-                    <div className="kpi__label">{card.label}</div>
-                    <span className={`kpi__icon ${card.cls}`} aria-hidden="true">
-                      {card.icon}
-                    </span>
-                  </div>
-                  <div className="kpi__value">{card.value}</div>
-                </div>
-              ))}
-            </div>
-
-            <div className="card section-card">
-              <div className="card__header">
-                <div className="card__title">Pedidos por status</div>
-                <span className="muted" style={{ fontSize: 13 }}>
-                  {statusTotal} no total
-                </span>
-              </div>
-              <div className="card__body">
-                {segments.map((seg) => (
-                  <div key={seg.label} className="status-progress">
-                    <div className="status-progress__label">
-                      <span className="muted">{seg.label}</span>
-                      <span className="cell-strong">{seg.count}</span>
+        {loading ? (
+          <LoadingState label="Carregando indicadores..." />
+        ) : error ? (
+          <div className="card">
+            <ErrorState message={error} onRetry={load} />
+          </div>
+        ) : (
+          data && (
+            <>
+              <section className="dashboard-metrics" aria-label="Indicadores gerais">
+                {metrics.map((metric) => (
+                  <article className={`dashboard-metric dashboard-metric--${metric.tone}`} key={metric.label}>
+                    <div className="dashboard-metric__top">
+                      <span className="dashboard-metric__label">{metric.label}</span>
+                      <span className="dashboard-metric__icon">{metric.icon}</span>
                     </div>
-                    <div className="status-progress__track">
-                      <div
-                        className={`status-progress__bar ${seg.cls}`}
-                        style={{
-                          width: `${(seg.count / maxSegment) * 100}%`,
-                        }}
-                      />
-                    </div>
-                  </div>
+                    <strong className="dashboard-metric__value">{metric.value}</strong>
+                    <span className="dashboard-metric__note">{metric.note}</span>
+                  </article>
                 ))}
-              </div>
-            </div>
+              </section>
 
-            <div className="card section-card">
-              <div className="card__header">
-                <div className="card__title">
-                Atalhos
+              <section className="dashboard-panel">
+                <div className="dashboard-panel__heading">
+                  <div>
+                    <span className="dashboard-eyebrow">ACOMPANHAMENTO</span>
+                    <h2>Pedidos por status</h2>
+                    <p>Distribuição dos pedidos registrados na plataforma.</p>
+                  </div>
+                  <span className="dashboard-panel__total">
+                    {statusTotal} {statusTotal === 1 ? 'pedido' : 'pedidos'}
+                  </span>
                 </div>
-              </div>
-              <div className="card__body shortcut-grid">
-                {shortcuts.map((s) => (
+
+                <div className="dashboard-status-grid">
+                  {statuses.map((status) => {
+                    const percentage = statusTotal > 0
+                      ? Math.round((status.count / statusTotal) * 100)
+                      : 0;
+
+                    return (
+                      <article className={`dashboard-status dashboard-status--${status.tone}`} key={status.label}>
+                        <span className="dashboard-status__dot" aria-hidden="true" />
+                        <div className="dashboard-status__copy">
+                          <span className="dashboard-status__label">{status.label}</span>
+                          <strong className="dashboard-status__count">{status.count}</strong>
+                        </div>
+                        <span className="dashboard-status__share">
+                          {statusTotal > 0 ? `${percentage}% do total` : 'Sem registros'}
+                        </span>
+                      </article>
+                    );
+                  })}
+                </div>
+              </section>
+
+              <section className="dashboard-panel">
+                <div className="dashboard-panel__heading">
+                  <div>
+                    <span className="dashboard-eyebrow">NAVEGAÇÃO</span>
+                    <h2>Acesso rápido</h2>
+                    <p>Encontre as principais áreas de gestão.</p>
+                  </div>
+                </div>
+                <div className="dashboard-shortcuts">
+                  {shortcuts.map((shortcut) => (
+                    <button
+                      key={shortcut.label}
+                      type="button"
+                      className="dashboard-shortcut"
+                      onClick={() => navigate(shortcut.to)}
+                    >
+                      <span className={`dashboard-shortcut__icon dashboard-shortcut__icon--${shortcut.tone}`}>
+                        {shortcut.icon}
+                      </span>
+                      <span className="dashboard-shortcut__copy">
+                        <strong>{shortcut.label}</strong>
+                        <small>{shortcut.description}</small>
+                      </span>
+                      <span className="dashboard-shortcut__arrow" aria-hidden="true">↗</span>
+                    </button>
+                  ))}
+                </div>
+              </section>
+
+              <section className="dashboard-panel dashboard-recent">
+                <div className="dashboard-panel__heading">
+                  <div>
+                    <span className="dashboard-eyebrow">MOVIMENTAÇÕES</span>
+                    <h2>Pedidos recentes</h2>
+                    <p>Últimas solicitações recebidas pela plataforma.</p>
+                  </div>
                   <button
-                    key={s.label}
-                    className="btn btn--ghost shortcut"
-                    onClick={() => navigate(s.to)}
+                    type="button"
+                    className="btn btn--ghost btn--sm dashboard-recent__all"
+                    onClick={() => navigate('/admin/orders')}
                   >
-                    {s.icon} {s.label}
+                    Ver todos
                   </button>
-                ))}
-              </div>
-            </div>
-
-            <div className="card">
-              <div className="card__header">
-                <div className="card__title">Pedidos recentes</div>
-              </div>
-
-              {data.recentOrders.length === 0 ? (
-                <EmptyState
-                  icon={<IconOrders size={26} />}
-                  title="Nenhum pedido realizado ainda"
-                  description="Os pedidos aparecerão aqui assim que forem criados."
-                />
-              ) : (
-                <div className="table-wrap">
-                  <table className="table">
-                    <thead>
-                      <tr>
-                        <th>Pedido</th>
-                        <th>Cliente</th>
-                        <th>Status</th>
-                        <th>Valor</th>
-                        <th>Data</th>
-                        <th style={{ textAlign: 'right' }}>Ações</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {data.recentOrders.map((order) => (
-                        <tr key={order.id}>
-                          <td className="cell-strong">#{order.id.slice(0, 8)}</td>
-                          <td>
-                            <div className="cell-strong">{order.user.name}</div>
-                            <div className="cell-muted">{order.user.email}</div>
-                          </td>
-                          <td>
-                            <StatusBadge status={order.status as never} />
-                          </td>
-                          <td className="cell-amount">{formatCurrency(order.totalValue)}</td>
-                          <td className="cell-muted">{formatDate(order.createdAt)}</td>
-                          <td style={{ textAlign: 'right' }}>
-                            <button
-                              className="btn btn--ghost btn--sm"
-                              onClick={() => navigate(`/admin/orders/${order.id}`)}
-                            >
-                              <IconEye size={16} /> Detalhes
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
                 </div>
-              )}
-            </div>
-          </>
-        )
-      )}
+
+                {data.recentOrders.length === 0 ? (
+                  <EmptyState
+                    icon={<IconOrders size={26} />}
+                    title="Nenhum pedido realizado ainda"
+                    description="Os pedidos aparecerão aqui assim que forem criados."
+                  />
+                ) : (
+                  <div className="table-wrap dashboard-recent__table-wrap">
+                    <table className="table dashboard-recent__table">
+                      <thead>
+                        <tr>
+                          <th>Pedido</th>
+                          <th>Cliente</th>
+                          <th>Status</th>
+                          <th>Valor</th>
+                          <th>Data</th>
+                          <th className="dashboard-recent__actions-heading">Ações</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {data.recentOrders.map((order) => (
+                          <tr key={order.id}>
+                            <td><span className="orders-id">#{order.id.slice(0, 8)}</span></td>
+                            <td>
+                              <div className="orders-customer">
+                                <strong>{order.user.name}</strong>
+                                <span>{order.user.email}</span>
+                              </div>
+                            </td>
+                            <td><StatusBadge status={order.status as never} /></td>
+                            <td className="orders-amount">{formatCurrency(order.totalValue)}</td>
+                            <td className="orders-date">{formatDate(order.createdAt)}</td>
+                            <td className="dashboard-recent__actions">
+                              <button
+                                type="button"
+                                className="btn btn--ghost btn--sm"
+                                onClick={() => navigate(`/admin/orders/${order.id}`)}
+                              >
+                                <IconEye size={16} /> Detalhes
+                              </button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+              </section>
+            </>
+          )
+        )}
+      </div>
     </AdminLayout>
   );
 }
