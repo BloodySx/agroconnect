@@ -1,9 +1,8 @@
-﻿import { useCallback, useEffect, useState, useRef } from 'react';
+import { useCallback, useState } from 'react';
 import { ActivityIndicator, Pressable, RefreshControl, ScrollView, Text, View } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
+import { RouteProp, useFocusEffect, useNavigation, useRoute } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { useFocusEffect } from '@react-navigation/native';
 
 import { RootStackParamList } from '../../../navigation/types';
 import {
@@ -13,10 +12,7 @@ import {
   getPackageDisplayName,
   getPackageProgressLabel,
 } from '../quotation-flow';
-import {
-  getPackageDescription,
-  productService,
-} from '../../../services/api/products';
+import { productService } from '../../../services/api/products';
 import ProgressIndicator from '../components/ProgressIndicator';
 import { styles } from './styles';
 import QuotationLayout from '../../../components/QuotationLayout';
@@ -34,16 +30,15 @@ export default function PackageSelectionScreen() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [blocked, setBlocked] = useState(false);
-  const [currentPriceVersion, setCurrentPriceVersion] = useState<string | null>(null);
   const { nextRequest, isCurrent, invalidate } = useRequestGuard();
 
   const loadPackages = useCallback(async () => {
     const { requestId, userId } = await nextRequest();
     setLoading(true);
     setError(null);
+
     try {
-      console.log('loadPackages: calling getClientPackagesWithPrices with productId:', productId);
-       const clientOffers = await productService.getClientPackagesWithPrices(productId);
+      const clientOffers = await productService.getClientPackagesWithPrices(productId);
       if (!isCurrent(requestId, userId)) return;
 
       const packageOrder: Record<string, number> = {
@@ -51,7 +46,8 @@ export default function PackageSelectionScreen() {
         BOMBONA_20L: 1,
         SACHÊ: 2,
       };
-      const offers: ProductPackageOffer[] = clientOffers
+
+      const mappedOffers: ProductPackageOffer[] = clientOffers
         .filter((offer) => offer.productId === productId)
         .map((offer) => ({
           active: offer.active,
@@ -67,31 +63,31 @@ export default function PackageSelectionScreen() {
             priceId: offer.priceId,
           },
         }));
-      const sorted = offers.sort((a, b) => {
+
+      const sorted = mappedOffers.sort((a, b) => {
         const orderA = packageOrder[a.package.type] ?? 999;
         const orderB = packageOrder[b.package.type] ?? 999;
         return orderA - orderB;
       });
+
       if (!isCurrent(requestId, userId)) return;
+
       setOffers(sorted);
       setBlocked(sorted.length === 0);
-      setSelectedPackageId((prev) => {
-        if (!prev) return prev;
-        const stillExists = sorted.some((o) => o.package.id === prev);
-        return stillExists ? prev : null;
+      setSelectedPackageId((previous) => {
+        if (!previous) return previous;
+        return sorted.some((offer) => offer.package.id === previous) ? previous : null;
       });
-      const selected = sorted.find((o) => o.package.id === selectedPackageId);
-      if (selected?.package.priceVersion) {
-        setCurrentPriceVersion(selected.package.priceVersion);
-      }
     } catch (loadError: unknown) {
       if (!isCurrent(requestId, userId)) return;
       console.error('Erro ao carregar embalagens:', loadError);
       setOffers([]);
       setBlocked(false);
-      setError(loadError instanceof Error
-        ? loadError.message
-        : 'Não foi possível carregar as embalagens. Tente novamente.');
+      setError(
+        loadError instanceof Error
+          ? loadError.message
+          : 'Não foi possível carregar as embalagens. Tente novamente.'
+      );
     } finally {
       if (isCurrent(requestId, userId)) {
         setLoading(false);
@@ -102,19 +98,10 @@ export default function PackageSelectionScreen() {
   useFocusEffect(
     useCallback(() => {
       invalidate();
-      const refresh = async () => {
-        await loadPackages();
-      };
-      refresh();
-      return () => {
-        invalidate();
-      };
+      void loadPackages();
+      return () => invalidate();
     }, [loadPackages, invalidate])
   );
-
-  const handleRefresh = () => {
-    loadPackages();
-  };
 
   const selectedOffer = offers.find((offer) => offer.package.id === selectedPackageId);
 
@@ -136,92 +123,137 @@ export default function PackageSelectionScreen() {
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#007AFF" />
-        <Text style={styles.loadingText}>Carregando embalagens...</Text>
+        <ActivityIndicator size="large" color="#2F6B4C" />
+        <Text style={styles.loadingText}>Preparando as embalagens...</Text>
       </View>
     );
   }
 
-  if (error) {
+  if (error || blocked) {
     return (
-      <View style={styles.errorContainer}>
-        <Text style={styles.errorText}>{error}</Text>
-        <Pressable onPress={() => void loadPackages()} style={styles.retryButton}>
-          <Text style={styles.retryButtonText}>Tentar novamente</Text>
-        </Pressable>
-      </View>
-    );
-  }
-
-  if (blocked) {
-    return (
-      <QuotationLayout
-        subtitle="Selecione a embalagem"
-        showBackButton={true}
-        onBack={handleBack}
-      >
-        <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
-          <View style={styles.errorContainer}>
-            <Text style={styles.errorText}>
-              Preço indisponível para esta embalagem.
-            </Text>
+      <QuotationLayout showBackButton onBack={handleBack}>
+        <View style={styles.stateContainer}>
+          <View style={styles.stateIcon}>
+            <MaterialCommunityIcons
+              name={blocked ? 'package-variant-closed' : 'cloud-alert-outline'}
+              size={30}
+              color="#52765A"
+            />
           </View>
-        </ScrollView>
+          <Text style={styles.stateTitle}>
+            {blocked ? 'Embalagens indisponíveis' : 'Não foi possível carregar'}
+          </Text>
+          <Text style={styles.stateMessage}>
+            {blocked ? 'Não há embalagens com preço disponível para este produto.' : error}
+          </Text>
+          {!blocked && (
+            <Pressable onPress={() => void loadPackages()} style={styles.retryButton}>
+              <Text style={styles.retryButtonText}>Tentar novamente</Text>
+            </Pressable>
+          )}
+        </View>
       </QuotationLayout>
     );
   }
 
   return (
-    <QuotationLayout
-      subtitle="Selecione a embalagem"
-      showBackButton={true}
-      onBack={handleBack}
-    >
+    <QuotationLayout showBackButton onBack={handleBack}>
       <ScrollView
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
-        refreshControl={<RefreshControl refreshing={false} onRefresh={() => void loadPackages()} />}
+        refreshControl={
+          <RefreshControl
+            refreshing={false}
+            onRefresh={() => void loadPackages()}
+            tintColor="#2F6B4C"
+            colors={['#2F6B4C']}
+          />
+        }
       >
-<ProgressIndicator
+        <View style={styles.intro}>
+          <View style={styles.eyebrow}>
+            <View style={styles.eyebrowDot} />
+            <Text style={styles.eyebrowText}>NOVA COTAÇÃO · ETAPA 02</Text>
+          </View>
+          <Text style={styles.pageTitle}>Escolha a embalagem</Text>
+          <Text style={styles.pageDescription}>
+            Selecione a opção mais adequada para sua necessidade.
+          </Text>
+        </View>
+
+        <ProgressIndicator
           currentStep={2}
           product={productName}
           packageValue={selectedOffer ? getPackageProgressLabel(selectedOffer.package) : undefined}
         />
 
+        <View style={styles.contextCard}>
+          <View style={styles.contextIcon}>
+            <MaterialCommunityIcons name="sprout" size={19} color="#376F4A" />
+          </View>
+          <View style={styles.contextCopy}>
+            <Text style={styles.contextLabel}>PRODUTO SELECIONADO</Text>
+            <Text style={styles.contextName} numberOfLines={2}>{productName}</Text>
+          </View>
+          <MaterialCommunityIcons name="check-circle" size={19} color="#739579" />
+        </View>
+
+        <View style={styles.sectionHeading}>
+          <View style={styles.sectionCopy}>
+            <Text style={styles.sectionTitle}>Embalagens disponíveis</Text>
+            <Text style={styles.sectionDescription}>Preço apresentado por litro</Text>
+          </View>
+          <View style={styles.countBadge}>
+            <Text style={styles.countBadgeText}>{offers.length}</Text>
+          </View>
+        </View>
+
         <View style={styles.packagesContainer}>
           {offers.map((offer) => {
             const package_ = offer.package;
             const isSelected = selectedPackageId === package_.id;
+
             return (
               <Pressable
                 key={package_.id}
                 onPress={() => setSelectedPackageId(package_.id)}
-                style={[styles.packageCard, isSelected && styles.packageCardSelected]}
+                accessibilityRole="button"
+                accessibilityState={{ selected: isSelected }}
+                style={({ pressed }) => [
+                  styles.packageCard,
+                  isSelected && styles.packageCardSelected,
+                  pressed && styles.packageCardPressed,
+                ]}
               >
                 <View style={[styles.packageIconContainer, isSelected && styles.packageIconContainerSelected]}>
                   <MaterialCommunityIcons
-                    name={package_.type === 'SACHÊ' ? 'package-variant' : package_.type === 'BOMBONA_20L' ? 'archive-outline' : 'cube-outline'}
-                    size={42}
-                    color={isSelected ? '#2F6B4C' : '#6C9877'}
+                    name={
+                      package_.type === 'SACHÊ'
+                        ? 'package-variant'
+                        : package_.type === 'BOMBONA_20L'
+                          ? 'archive-outline'
+                          : 'cube-outline'
+                    }
+                    size={29}
+                    color={isSelected ? '#FFFFFF' : '#3D7651'}
                   />
                 </View>
 
                 <View style={styles.packageInfo}>
                   <Text
-                    adjustsFontSizeToFit
-                    minimumFontScale={0.8}
-                    numberOfLines={1}
+                    numberOfLines={2}
                     style={[styles.packageName, isSelected && styles.packageNameSelected]}
                   >
                     {getPackageDisplayName(package_)}
                   </Text>
-                  <Text style={styles.packagePrice}>
-                    {formatCurrency(package_.pricePerLiter)} por litro
+                  <Text style={[styles.packagePrice, isSelected && styles.packagePriceSelected]}>
+                    {formatCurrency(package_.pricePerLiter)}
+                    <Text style={styles.packagePriceUnit}> / litro</Text>
                   </Text>
                 </View>
 
-<View style={[styles.checkbox, isSelected && styles.checkboxSelected]}>
-                  {isSelected && <Text style={styles.checkmark}>✓</Text>}
+                <View style={[styles.selectionIndicator, isSelected && styles.selectionIndicatorSelected]}>
+                  {isSelected && <MaterialCommunityIcons name="check" size={16} color="#FFFFFF" />}
                 </View>
               </Pressable>
             );
@@ -232,10 +264,19 @@ export default function PackageSelectionScreen() {
           <Pressable
             onPress={handleContinue}
             disabled={!selectedOffer}
-            style={[styles.continueButton, !selectedOffer && styles.continueButtonDisabled]}
+            accessibilityRole="button"
+            style={({ pressed }) => [
+              styles.continueButton,
+              !selectedOffer && styles.continueButtonDisabled,
+              pressed && selectedOffer && styles.continueButtonPressed,
+            ]}
           >
             <Text style={styles.continueButtonText}>Continuar</Text>
+            <MaterialCommunityIcons name="arrow-right" size={20} color="#FFFFFF" />
           </Pressable>
+          <Text style={styles.footerHint}>
+            {selectedOffer ? 'Embalagem selecionada. Próxima etapa: quantidade.' : 'Selecione uma embalagem para continuar.'}
+          </Text>
         </View>
       </ScrollView>
     </QuotationLayout>
