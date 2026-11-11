@@ -27,8 +27,23 @@ async function buildServer() {
     try {
         console.log('>>> BUILD SERVER STARTED');
         await app.register(helmet);
-    const corsOrigin =
-      config.corsOrigin === '*' ? '*' : config.corsOrigin.split(',').map((value) => value.trim());
+    const configuredCorsOrigins =
+      config.corsOrigin === '*'
+        ? '*'
+        : config.corsOrigin.split(',').map((value) => value.trim());
+
+    // Em desenvolvimento, permita as origens locais usadas pelo Vite.
+    // Em produção, respeite exclusivamente CORS_ORIGIN.
+    const corsOrigin = config.isProduction || configuredCorsOrigins === '*'
+      ? configuredCorsOrigins
+      : Array.from(new Set([
+          ...configuredCorsOrigins,
+          'http://localhost:5173',
+          'http://127.0.0.1:5173',
+          'http://localhost:5180',
+          'http://127.0.0.1:5180',
+        ]));
+
     await app.register(cors, {
       origin: corsOrigin,
     });
