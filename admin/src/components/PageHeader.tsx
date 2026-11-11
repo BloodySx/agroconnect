@@ -11,7 +11,8 @@ export function PageHeader({
 }) {
   return (
     <div className="page-head">
-      <div>
+      <div className="page-head__copy">
+        <span className="page-head__eyebrow">Painel administrativo</span>
         <h1>{title}</h1>
         {subtitle && <p>{subtitle}</p>}
       </div>
