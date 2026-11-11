@@ -1,12 +1,17 @@
 import { useState, useCallback } from 'react';
-import { Pressable, ScrollView, Text, View, Alert, RefreshControl, ActivityIndicator } from 'react-native';
+import {
+  Pressable,
+  ScrollView,
+  Text,
+  View,
+  RefreshControl,
+  ActivityIndicator,
+} from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { useFocusEffect } from '@react-navigation/native';
 
 import { RootStackParamList } from '../../navigation/types';
-import { colors, spacing, radius, shadows, typography } from '../../theme';
 import ProgressIndicator from './components/ProgressIndicator';
 import { styles } from './styles';
 import { productService } from '../../services/api/products';
@@ -31,7 +36,7 @@ export default function NewQuotationScreen() {
       setError(null);
       const data = await productService.getProducts();
       if (!isCurrent(requestId, userId)) return;
-      setProducts(data.filter(p => p.active));
+      setProducts(data.filter((product) => product.active));
     } catch (err) {
       if (!isCurrent(requestId, userId)) return;
       console.error('Erro ao carregar produtos:', err);
@@ -57,40 +62,20 @@ export default function NewQuotationScreen() {
   );
 
   const handleRefresh = () => {
-    loadProducts();
+    void loadProducts();
   };
 
   const handleContinue = () => {
-    if (selectedProduct) {
-      const product = products.find(p => p.id === selectedProduct);
-      if (product) {
-        navigation.navigate('PackageSelection', {
-          productId: product.id,
-          productName: product.name,
-        });
-      }
+    if (!selectedProduct) return;
+
+    const product = products.find((item) => item.id === selectedProduct);
+    if (product) {
+      navigation.navigate('PackageSelection', {
+        productId: product.id,
+        productName: product.name,
+      });
     }
   };
-
-  if (loading) {
-    return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#007AFF" />
-        <Text style={styles.loadingText}>Carregando produtos...</Text>
-      </View>
-    );
-  }
-
-  if (error) {
-    return (
-      <View style={styles.errorContainer}>
-        <Text style={styles.errorText}>{error}</Text>
-        <Pressable onPress={handleRefresh} style={styles.retryButton}>
-          <Text style={styles.retryButtonText}>Tentar novamente</Text>
-        </Pressable>
-      </View>
-    );
-  }
 
   const handleBack = () => {
     if (navigation.canGoBack()) {
@@ -100,26 +85,70 @@ export default function NewQuotationScreen() {
     }
   };
 
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#2F6B4C" />
+        <Text style={styles.loadingText}>Preparando seu catálogo...</Text>
+      </View>
+    );
+  }
+
+  if (error) {
+    return (
+      <View style={styles.errorContainer}>
+        <View style={styles.errorIcon}>
+          <MaterialCommunityIcons name="cloud-alert-outline" size={30} color="#A45C4D" />
+        </View>
+        <Text style={styles.errorTitle}>Não foi possível carregar</Text>
+        <Text style={styles.errorText}>{error}</Text>
+        <Pressable onPress={handleRefresh} style={styles.retryButton}>
+          <Text style={styles.retryButtonText}>Tentar novamente</Text>
+        </Pressable>
+      </View>
+    );
+  }
+
   return (
-    <QuotationLayout
-      subtitle="Selecione o produto"
-      showBackButton={true}
-      onBack={handleBack}
-    >
+    <QuotationLayout showBackButton onBack={handleBack}>
       <ScrollView
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
         refreshControl={
-          <RefreshControl refreshing={false} onRefresh={handleRefresh} />
+          <RefreshControl
+            refreshing={false}
+            onRefresh={handleRefresh}
+            tintColor="#2F6B4C"
+            colors={['#2F6B4C']}
+          />
         }
       >
-        {/* INDICADOR DE PROGRESSO */}
+        <View style={styles.intro}>
+          <View style={styles.eyebrow}>
+            <View style={styles.eyebrowDot} />
+            <Text style={styles.eyebrowText}>NOVA COTAÇÃO · ETAPA 01</Text>
+          </View>
+          <Text style={styles.pageTitle}>Escolha seu produto</Text>
+          <Text style={styles.pageDescription}>
+            Selecione o insumo que deseja incluir na sua cotação.
+          </Text>
+        </View>
+
         <ProgressIndicator
           currentStep={1}
-          product={selectedProduct ? (products.find(p => p.id === selectedProduct)?.name) : undefined}
+          product={selectedProduct ? products.find((product) => product.id === selectedProduct)?.name : undefined}
         />
 
-        {/* LISTA DE PRODUTOS */}
+        <View style={styles.sectionHeading}>
+          <View style={styles.sectionTitleWrap}>
+            <Text style={styles.sectionTitle}>Produtos disponíveis</Text>
+            <Text style={styles.sectionDescription}>Toque em uma opção para selecionar</Text>
+          </View>
+          <View style={styles.countBadge}>
+            <Text style={styles.countBadgeText}>{products.length}</Text>
+          </View>
+        </View>
+
         <View style={styles.productsContainer}>
           {products.map((product) => {
             const isSelected = selectedProduct === product.id;
@@ -128,46 +157,37 @@ export default function NewQuotationScreen() {
               <Pressable
                 key={product.id}
                 onPress={() => setSelectedProduct(product.id)}
-                style={[
+                accessibilityRole="button"
+                accessibilityState={{ selected: isSelected }}
+                style={({ pressed }) => [
                   styles.productCard,
                   isSelected && styles.productCardSelected,
+                  pressed && styles.productCardPressed,
                 ]}
               >
-                {/* Ícone do produto (placeholder) */}
-                <View
-                  style={[
-                    styles.productIconContainer,
-                    isSelected && styles.productIconContainerSelected,
-                  ]}
-                >
+                <View style={[styles.productIconContainer, isSelected && styles.productIconContainerSelected]}>
                   <MaterialCommunityIcons
                     name="sprout"
-                    size={28}
-                    color={isSelected ? '#FFFFFF' : '#397653'}
+                    size={27}
+                    color={isSelected ? '#FFFFFF' : '#3D7651'}
                   />
                 </View>
 
-                {/* Informações do produto */}
                 <View style={styles.productInfo}>
                   <Text
-                    style={[
-                      styles.productName,
-                      isSelected && styles.productNameSelected,
-                    ]}
+                    style={[styles.productName, isSelected && styles.productNameSelected]}
+                    numberOfLines={2}
                   >
                     {product.name}
                   </Text>
+                  <Text style={[styles.productMeta, isSelected && styles.productMetaSelected]}>
+                    Insumo agrícola
+                  </Text>
                 </View>
 
-                {/* Indicador de seleção */}
-                <View
-                  style={[
-                    styles.checkbox,
-                    isSelected && styles.checkboxSelected,
-                  ]}
-                >
+                <View style={[styles.selectionIndicator, isSelected && styles.selectionIndicatorSelected]}>
                   {isSelected && (
-                    <Text style={styles.checkmark}>✓</Text>
+                    <MaterialCommunityIcons name="check" size={16} color="#FFFFFF" />
                   )}
                 </View>
               </Pressable>
@@ -175,18 +195,36 @@ export default function NewQuotationScreen() {
           })}
         </View>
 
-        {/* BOTÃO CONTINUAR */}
+        {products.length === 0 && (
+          <View style={styles.emptyState}>
+            <MaterialCommunityIcons name="sprout-outline" size={34} color="#829783" />
+            <Text style={styles.emptyTitle}>Nenhum produto disponível</Text>
+            <Text style={styles.emptyDescription}>
+              Atualize a lista ou tente novamente mais tarde.
+            </Text>
+            <Pressable onPress={handleRefresh} style={styles.retryButton}>
+              <Text style={styles.retryButtonText}>Atualizar lista</Text>
+            </Pressable>
+          </View>
+        )}
+
         <View style={styles.footer}>
           <Pressable
             onPress={handleContinue}
             disabled={!selectedProduct}
-            style={[
+            accessibilityRole="button"
+            style={({ pressed }) => [
               styles.continueButton,
               !selectedProduct && styles.continueButtonDisabled,
+              pressed && selectedProduct && styles.continueButtonPressed,
             ]}
           >
             <Text style={styles.continueButtonText}>Continuar</Text>
+            <MaterialCommunityIcons name="arrow-right" size={20} color="#FFFFFF" />
           </Pressable>
+          <Text style={styles.footerHint}>
+            {selectedProduct ? 'Produto selecionado. Você poderá revisar os dados na próxima etapa.' : 'Selecione um produto para continuar.'}
+          </Text>
         </View>
       </ScrollView>
     </QuotationLayout>
