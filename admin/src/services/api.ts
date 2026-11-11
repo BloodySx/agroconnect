@@ -1,6 +1,6 @@
 import { getToken } from '../store/auth';
 
-const API_BASE = import.meta.env.VITE_API_URL ?? 'http://localhost:3333';
+const API_BASE = import.meta.env.VITE_API_URL ?? 'http://127.0.0.1:3333';
 
 export class ApiClientError extends Error {
   status: number;
