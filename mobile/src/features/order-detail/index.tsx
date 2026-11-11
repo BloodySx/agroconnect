@@ -213,9 +213,6 @@ export default function OrderDetailScreen() {
             <Text style={styles.statusTitle}>{status.label}</Text>
             <Text style={styles.statusDescription}>Acompanhe aqui a situação desta solicitação.</Text>
           </View>
-          <View style={[styles.statusPill, { backgroundColor: status.background }]}>
-            <Text style={[styles.statusPillText, { color: status.color }]}>{status.label}</Text>
-          </View>
         </View>
 
         <View style={styles.card}>
