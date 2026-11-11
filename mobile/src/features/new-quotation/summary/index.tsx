@@ -15,6 +15,7 @@ import {
   RouteProp,
 } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 import { RootStackParamList } from '../../../navigation/types';
 import ProgressIndicator from '../components/ProgressIndicator';
