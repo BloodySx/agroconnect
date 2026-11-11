@@ -1,134 +1,222 @@
 import { StyleSheet } from 'react-native';
 
-import { spacing } from '../../../theme';
-
 export const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#F6FAF6',
-  },
   scrollContent: {
     flexGrow: 1,
-    paddingHorizontal: spacing.lg,
-    paddingTop: spacing.lg,
-    paddingBottom: spacing.xxl,
+    paddingHorizontal: 22,
+    paddingTop: 8,
+    paddingBottom: 26,
   },
-
-  /* CABEÇALHO */
-  header: {
-    marginBottom: spacing.xl,
+  intro: {
+    marginTop: 9,
+    marginBottom: 5,
   },
-  title: {
-    fontSize: 28,
-    fontWeight: '700',
-    color: '#263746',
-    marginBottom: spacing.sm,
-    lineHeight: 34,
+  eyebrow: {
+    alignSelf: 'flex-start',
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 10,
+    paddingVertical: 7,
+    borderRadius: 20,
+    backgroundColor: '#E8F0E5',
+    marginBottom: 11,
   },
-  subtitle: {
+  eyebrowDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+    backgroundColor: '#3E7852',
+    marginRight: 7,
+  },
+  eyebrowText: {
+    color: '#52765A',
+    fontSize: 9,
+    fontWeight: '800',
+    letterSpacing: 1.1,
+  },
+  pageTitle: {
+    color: '#20342A',
+    fontSize: 26,
+    lineHeight: 32,
+    fontWeight: '800',
+    letterSpacing: -0.45,
+  },
+  pageDescription: {
+    color: '#77847A',
+    fontSize: 12,
+    lineHeight: 19,
+    marginTop: 5,
+  },
+  contextCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#EAEFE5',
+    borderWidth: 1,
+    borderColor: '#DFE8DA',
+    borderRadius: 17,
+    padding: 12,
+    marginBottom: 18,
+  },
+  contextIcon: {
+    width: 41,
+    height: 41,
+    borderRadius: 14,
+    backgroundColor: '#FFFFFF',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 11,
+  },
+  contextCopy: {
+    flex: 1,
+    minWidth: 0,
+  },
+  contextLabel: {
+    color: '#879487',
+    fontSize: 8,
+    fontWeight: '800',
+    letterSpacing: 1.1,
+    marginBottom: 3,
+  },
+  contextProduct: {
+    color: '#31533A',
+    fontSize: 12,
+    fontWeight: '800',
+  },
+  contextDetail: {
+    color: '#758577',
+    fontSize: 10,
+    marginTop: 3,
+  },
+  sectionHeading: {
+    marginBottom: 11,
+  },
+  sectionTitle: {
+    color: '#263A2F',
     fontSize: 16,
-    color: '#68756B',
-    lineHeight: 22,
+    fontWeight: '800',
   },
-
-  /* LISTA DE PRAZOS */
+  sectionCaption: {
+    color: '#89958A',
+    fontSize: 10,
+    marginTop: 3,
+  },
   termsContainer: {
-    gap: spacing.md,
-    marginBottom: spacing.xl,
+    gap: 10,
+    marginBottom: 12,
   },
-
-  /* CARD DO PRAZO */
   termCard: {
+    minHeight: 77,
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#FFFFFF',
-    borderRadius: 20,
-    padding: spacing.md,
-    borderWidth: 1.5,
-    borderColor: '#E8EEE8',
-    shadowColor: 'rgba(0, 0, 0, 0.04)',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 1,
+    borderRadius: 19,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+    borderWidth: 1,
+    borderColor: '#E5EBE2',
+    shadowColor: '#233C2B',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.04,
     shadowRadius: 8,
     elevation: 2,
   },
   termCardSelected: {
-    borderWidth: 2,
-    borderColor: '#78B47F',
-    backgroundColor: '#EAF4EA',
+    backgroundColor: '#F0F5ED',
+    borderWidth: 1.5,
+    borderColor: '#3E7852',
   },
-
-  /* TEXTO DO PRAZO */
+  termCardPressed: {
+    opacity: 0.88,
+    transform: [{ scale: 0.992 }],
+  },
+  termIcon: {
+    width: 45,
+    height: 45,
+    borderRadius: 15,
+    backgroundColor: '#EAF1E7',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 12,
+  },
+  termIconSelected: {
+    backgroundColor: '#2F6B4C',
+  },
   termContent: {
     flex: 1,
+    minWidth: 0,
   },
   termLabel: {
-    fontSize: 17,
-    fontWeight: '600',
-    color: '#263746',
-    lineHeight: 22,
+    color: '#283B30',
+    fontSize: 16,
+    lineHeight: 21,
+    fontWeight: '800',
   },
   termLabelSelected: {
-    color: '#3F7650',
-    fontWeight: '700',
+    color: '#245C40',
   },
   termDetail: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: '#68756B',
-    lineHeight: 18,
-    marginTop: 2,
+    color: '#879287',
+    fontSize: 11,
+    fontWeight: '600',
+    lineHeight: 16,
+    marginTop: 3,
   },
   termDetailSelected: {
-    color: '#3F7650',
+    color: '#67806B',
   },
-
-  /* CHECKBOX */
-  checkbox: {
-    width: 26,
-    height: 26,
+  selectionIndicator: {
+    width: 25,
+    height: 25,
     borderRadius: 13,
-    borderWidth: 2,
-    borderColor: '#E8EEE8',
+    borderWidth: 1.7,
+    borderColor: '#D6E0D5',
+    backgroundColor: '#FFFFFF',
     alignItems: 'center',
     justifyContent: 'center',
-    marginLeft: spacing.sm,
+    marginLeft: 9,
   },
-  checkboxSelected: {
-    backgroundColor: '#78B47F',
-    borderColor: '#78B47F',
+  selectionIndicatorSelected: {
+    backgroundColor: '#2F6B4C',
+    borderColor: '#2F6B4C',
   },
-  checkmark: {
-    color: '#FFFFFF',
-    fontSize: 16,
-    fontWeight: '700',
-  },
-
-   /* BOTÃO CONTINUAR */
-   footer: {
+  footer: {
     marginTop: 'auto',
-    paddingBottom: spacing.lg,
+    paddingTop: 14,
+    paddingBottom: 8,
   },
   continueButton: {
-    width: '100%',
-    height: 56,
-    borderRadius: 18,
-    backgroundColor: '#78B47F',
+    minHeight: 56,
+    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: 'rgba(120, 180, 127, 0.3)',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 1,
-    shadowRadius: 12,
+    gap: 12,
+    borderRadius: 17,
+    backgroundColor: '#245C40',
+    shadowColor: '#245C40',
+    shadowOffset: { width: 0, height: 5 },
+    shadowOpacity: 0.18,
+    shadowRadius: 10,
     elevation: 4,
   },
   continueButtonDisabled: {
-    opacity: 0.4,
+    backgroundColor: '#C9D9C9',
+    shadowOpacity: 0,
+    elevation: 0,
+  },
+  continueButtonPressed: {
+    opacity: 0.9,
+    transform: [{ scale: 0.99 }],
   },
   continueButtonText: {
-    fontSize: 17,
-    fontWeight: '700',
     color: '#FFFFFF',
-    letterSpacing: 0.3,
+    fontSize: 15,
+    fontWeight: '800',
+  },
+  footerHint: {
+    color: '#9AA49A',
+    fontSize: 10,
+    lineHeight: 15,
+    textAlign: 'center',
+    marginTop: 9,
   },
 });
