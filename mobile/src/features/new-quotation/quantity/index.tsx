@@ -203,8 +203,8 @@ export default function QuantityScreen() {
             accessibilityRole="button"
             style={({ pressed }) => [
               styles.continueButton,
-              !validQuantity && styles.continueButtonDisabled,
-              pressed && validQuantity && styles.continueButtonPressed,
+              validQuantity === null ? styles.continueButtonDisabled : undefined,
+              pressed && validQuantity !== null ? styles.continueButtonPressed : undefined,
             ]}
           >
             <Text style={styles.continueButtonText}>Continuar</Text>
