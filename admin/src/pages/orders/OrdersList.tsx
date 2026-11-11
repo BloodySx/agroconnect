@@ -133,192 +133,261 @@ export function OrdersListPage() {
   };
 
   const kpis = [
-    { label: 'Total de pedidos', value: pagination.total },
     {
-      label: 'Pendentes nesta página',
-      value: orders.filter((o) => o.status === 'PENDING').length,
+      label: 'Pedidos encontrados',
+      value: pagination.total,
+      note: 'Resultado da consulta',
+      tone: 'total',
     },
     {
-      label: 'Confirmados nesta página',
-      value: orders.filter((o) => o.status === 'CONFIRMED').length,
+      label: 'Pendentes na página',
+      value: orders.filter((order) => order.status === 'PENDING').length,
+      note: 'Aguardando análise',
+      tone: 'pending',
     },
     {
-      label: 'Valor nesta página',
-      value: formatCurrency(orders.reduce((acc, o) => acc + o.totalValue, 0)),
+      label: 'Confirmados na página',
+      value: orders.filter((order) => order.status === 'CONFIRMED').length,
+      note: 'Pedidos confirmados',
+      tone: 'confirmed',
+    },
+    {
+      label: 'Valor na página',
+      value: formatCurrency(orders.reduce((total, order) => total + order.totalValue, 0)),
+      note: 'Soma dos pedidos exibidos',
+      tone: 'value',
     },
   ];
 
   return (
     <AdminLayout title="Pedidos" subtitle="Gerencie e acompanhe os pedidos da plataforma">
-      <PageHeader
-        title="Pedidos"
-        subtitle={`${pagination.total} pedido(s) encontrado(s)`}
-      />
-      <div className="kpi-row">
-        {kpis.map((k) => (
-          <div key={k.label} className="card kpi">
-            <div className="kpi__label">{k.label}</div>
-            <div className="kpi__value">{k.value}</div>
-          </div>
-        ))}
-      </div>
+      <div className="orders-page">
+        <PageHeader
+          title="Pedidos"
+          subtitle="Acompanhe solicitações, atualize o andamento e consulte os detalhes."
+        />
 
-      <div className="card">
-        <div className="card__header">
-          <div className="card__title">Lista de pedidos</div>
-          <div className="filter-bar">
-            <div className="field">
-              <label className="field__label" htmlFor="orders-status-filter">Status</label>
-              <select
-                id="orders-status-filter"
-                className="select"
-                value={status}
-                onChange={(e) => setStatus(e.target.value as StatusFilter)}
-              >
-                {STATUS_OPTIONS.map((o) => (
-                  <option key={o.value} value={o.value}>
-                    {o.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="field">
-              <label className="field__label" htmlFor="orders-start-date">Data inicial</label>
-              <input
-                id="orders-start-date"
-                type="date"
-                className="input"
-                value={startDate}
-                onChange={(e) => setStartDate(e.target.value)}
-              />
-            </div>
-            <div className="field">
-              <label className="field__label" htmlFor="orders-end-date">Data final</label>
-              <input
-                id="orders-end-date"
-                type="date"
-                className="input"
-                value={endDate}
-                onChange={(e) => setEndDate(e.target.value)}
-              />
-            </div>
-            <button className="btn btn--primary" onClick={handleFilter}>
-              Filtrar
-            </button>
-            <button className="btn btn--ghost" onClick={handleClear}>
-              Limpar
-            </button>
-          </div>
-        </div>
+        <section className="orders-overview" aria-label="Resumo dos pedidos">
+          {kpis.map((item) => (
+            <article className={`orders-stat orders-stat--${item.tone}`} key={item.label}>
+              <span className="orders-stat__accent" aria-hidden="true" />
+              <div className="orders-stat__content">
+                <span className="orders-stat__label">{item.label}</span>
+                <strong className="orders-stat__value">{item.value}</strong>
+                <span className="orders-stat__note">{item.note}</span>
+              </div>
+            </article>
+          ))}
+        </section>
 
-        {loading ? (
-          <Spinner center />
-        ) : error ? (
-          <ErrorState message={error} onRetry={() => load(pagination.page)} />
-        ) : orders.length === 0 ? (
-          <EmptyState
-            icon={<IconInbox size={26} />}
-            title="Nenhum pedido encontrado"
-            description="Ajuste os filtros ou aguarde novas solicitações de pedidos."
-          />
-        ) : (
-          <>
-            <div className="table-wrap">
-              <table className="table">
-                <thead>
-                  <tr>
-                    <th>Pedido</th>
-                    <th>Cliente</th>
-                    <th>Data</th>
-                    <th>Itens</th>
-                    <th>Pagamento</th>
-                    <th>Valor</th>
-                    <th>Status</th>
-                    <th style={{ textAlign: 'right' }}>Ações</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {orders.map((o) => (
-                    <tr key={o.id}>
-                      <td className="cell-strong">#{o.id.slice(0, 8)}</td>
-                      <td>
-                        <div className="cell-strong">{o.user.name}</div>
-                        <div className="cell-muted">{o.user.email}</div>
-                      </td>
-                      <td className="cell-muted">{formatDate(o.createdAt)}</td>
-                      <td>{o.items.length}</td>
-                      <td className="cell-muted">{o.paymentTerm}</td>
-                      <td className="cell-amount">{formatCurrency(o.totalValue)}</td>
-                      <td>
-                        <StatusBadge status={o.status} />
-                      </td>
-                      <td className="table__actions-cell">
-                            <div className="action-group action-group--orders">
+        <section className="orders-workspace" aria-label="Consulta de pedidos">
+          <div className="orders-filters">
+            <div className="orders-filters__heading">
+              <div>
+                <span className="orders-section-kicker">CONSULTA</span>
+                <h2>Filtrar pedidos</h2>
+                <p>Escolha um status ou período para localizar solicitações.</p>
+              </div>
+            </div>
+
+            <div className="orders-filters__controls">
+              <div className="orders-filter-field">
+                <label htmlFor="orders-status-filter">Status do pedido</label>
+                <select
+                  id="orders-status-filter"
+                  className="select"
+                  value={status}
+                  onChange={(event) => setStatus(event.target.value as StatusFilter)}
+                >
+                  {STATUS_OPTIONS.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="orders-filter-field">
+                <label htmlFor="orders-start-date">Data inicial</label>
+                <input
+                  id="orders-start-date"
+                  type="date"
+                  className="input"
+                  value={startDate}
+                  onChange={(event) => setStartDate(event.target.value)}
+                />
+              </div>
+
+              <div className="orders-filter-field">
+                <label htmlFor="orders-end-date">Data final</label>
+                <input
+                  id="orders-end-date"
+                  type="date"
+                  className="input"
+                  value={endDate}
+                  onChange={(event) => setEndDate(event.target.value)}
+                />
+              </div>
+
+              <div className="orders-filter-actions">
+                <button type="button" className="btn btn--primary" onClick={handleFilter}>
+                  Aplicar filtros
+                </button>
+                <button type="button" className="btn btn--ghost" onClick={handleClear}>
+                  Limpar
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div className="orders-results">
+            <div className="orders-results__heading">
+              <div>
+                <span className="orders-section-kicker">ACOMPANHAMENTO</span>
+                <h2>Lista de pedidos</h2>
+              </div>
+              <span className="orders-results__count">
+                {pagination.total} {pagination.total === 1 ? 'pedido' : 'pedidos'}
+              </span>
+            </div>
+
+            {loading ? (
+              <div className="orders-state-block">
+                <Spinner center />
+              </div>
+            ) : error ? (
+              <div className="orders-state-block">
+                <ErrorState message={error} onRetry={() => load(pagination.page)} />
+              </div>
+            ) : orders.length === 0 ? (
+              <div className="orders-state-block">
+                <EmptyState
+                  icon={<IconInbox size={26} />}
+                  title="Nenhum pedido encontrado"
+                  description="Ajuste os filtros ou aguarde novas solicitações."
+                />
+              </div>
+            ) : (
+              <>
+                <div className="table-wrap orders-table-wrap">
+                  <table className="table orders-table">
+                    <thead>
+                      <tr>
+                        <th>Pedido</th>
+                        <th>Cliente</th>
+                        <th>Data</th>
+                        <th>Itens</th>
+                        <th>Pagamento</th>
+                        <th>Valor</th>
+                        <th>Status</th>
+                        <th className="orders-actions-heading">Ações</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {orders.map((order) => (
+                        <tr key={order.id}>
+                          <td>
+                            <span className="orders-id">#{order.id.slice(0, 8)}</span>
+                          </td>
+                          <td>
+                            <div className="orders-customer">
+                              <strong>{order.user.name}</strong>
+                              <span>{order.user.email}</span>
+                            </div>
+                          </td>
+                          <td className="orders-date">{formatDate(order.createdAt)}</td>
+                          <td>
+                            <span className="orders-item-count">{order.items.length}</span>
+                          </td>
+                          <td className="orders-payment">{order.paymentTerm}</td>
+                          <td className="orders-amount">{formatCurrency(order.totalValue)}</td>
+                          <td>
+                            <StatusBadge status={order.status} />
+                          </td>
+                          <td className="table__actions-cell orders-actions-cell">
+                            <div className="action-group action-group--orders orders-row-actions">
                               <button
-                                className="btn btn--ghost btn--sm"
-                                onClick={() => navigate(`/admin/orders/${o.id}`)}
+                                type="button"
+                                className="btn btn--ghost btn--sm orders-details-btn"
+                                onClick={() => navigate(`/admin/orders/${order.id}`)}
                               >
-                                <IconEye size={16} /> Detalhes
+                                <IconEye size={16} />
+                                <span>Detalhes</span>
                               </button>
-                              {updatingStatusIds.has(o.id) ? (
+
+                              {updatingStatusIds.has(order.id) ? (
                                 <div className="action-status-loading" aria-live="polite">
                                   <Spinner />
                                   <span>Atualizando</span>
                                 </div>
                               ) : (
                                 <select
-                                  className="select select--compact action-status-select"
-                                  value={o.status}
-                                  onChange={(e) => handleStatusChange(o.id, e.target.value as OrderStatus)}
-                                  disabled={updatingStatusIds.has(o.id)}
-                                  aria-label={`Alterar status do pedido ${o.id.slice(0, 8)}`}
+                                  className="select select--compact action-status-select orders-status-select"
+                                  value={order.status}
+                                  onChange={(event) =>
+                                    handleStatusChange(order.id, event.target.value as OrderStatus)
+                                  }
+                                  disabled={updatingStatusIds.has(order.id)}
+                                  aria-label={`Alterar status do pedido ${order.id.slice(0, 8)}`}
                                 >
-                                  {ORDER_STATUS_OPTIONS.map((status) => (
-                                    <option key={status} value={status}>
-                                      {statusLabel[status]}
+                                  {ORDER_STATUS_OPTIONS.map((option) => (
+                                    <option key={option} value={option}>
+                                      {statusLabel[option]}
                                     </option>
                                   ))}
                                 </select>
                               )}
+
                               <button
-                                className={`btn btn--${deletingIds.has(o.id) ? 'danger' : 'ghost'} btn--sm`}
-                                onClick={() => setDeleteConfirmId(o.id)}
-                                disabled={deletingIds.has(o.id)}
+                                type="button"
+                                className="btn btn--ghost btn--sm orders-delete-btn"
+                                onClick={() => setDeleteConfirmId(order.id)}
+                                disabled={deletingIds.has(order.id)}
                               >
-                                {deletingIds.has(o.id) ? 'Excluindo...' : 'Excluir'}
+                                {deletingIds.has(order.id) ? 'Excluindo...' : 'Excluir'}
                               </button>
                             </div>
                           </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
 
-            <div className="pagination">
-              <div className="pagination__info">
-                Página {pagination.page} de {pagination.totalPages} · {pagination.total} pedidos
-              </div>
-              <div className="pagination__controls">
-                <button
-                  className="btn btn--ghost btn--sm"
-                  disabled={pagination.page <= 1}
-                  onClick={() => load(pagination.page - 1)}
-                >
-                  <IconChevronLeft size={16} /> Anterior
-                </button>
-                <button
-                  className="btn btn--ghost btn--sm"
-                  disabled={pagination.page >= pagination.totalPages}
-                  onClick={() => load(pagination.page + 1)}
-                >
-                  Próxima <IconChevronRight size={16} />
-                </button>
-              </div>
-            </div>
-          </>
-        )}
+                <div className="orders-pagination">
+                  <span className="orders-pagination__info">
+                    Exibindo página <strong>{pagination.page}</strong> de{' '}
+                    <strong>{pagination.totalPages}</strong>
+                    <span className="orders-pagination__separator">·</span>
+                    {pagination.total} {pagination.total === 1 ? 'pedido' : 'pedidos'} no total
+                  </span>
+                  <div className="orders-pagination__controls">
+                    <button
+                      type="button"
+                      className="btn btn--ghost btn--sm"
+                      disabled={pagination.page <= 1}
+                      onClick={() => load(pagination.page - 1)}
+                    >
+                      <IconChevronLeft size={16} />
+                      Anterior
+                    </button>
+                    <button
+                      type="button"
+                      className="btn btn--ghost btn--sm"
+                      disabled={pagination.page >= pagination.totalPages}
+                      onClick={() => load(pagination.page + 1)}
+                    >
+                      Próxima
+                      <IconChevronRight size={16} />
+                    </button>
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
+        </section>
       </div>
+
       <ConfirmDialog
         open={deleteConfirmId !== null}
         title="Excluir pedido"
