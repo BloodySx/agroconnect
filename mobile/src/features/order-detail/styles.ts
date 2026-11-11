@@ -130,18 +130,6 @@ export const styles = StyleSheet.create({
     lineHeight: 14,
     marginTop: 3,
   },
-  statusPill: {
-    position: 'absolute',
-    right: 13,
-    top: 12,
-    paddingHorizontal: 8,
-    paddingVertical: 5,
-    borderRadius: 20,
-  },
-  statusPillText: {
-    fontSize: 8,
-    fontWeight: '900',
-  },
 
   card: {
     backgroundColor: '#FFFFFF',
