@@ -29,7 +29,8 @@ export default function ProgressIndicator({
     undefined,
   ];
   const safeCurrentStep = Math.max(1, Math.min(STEP_LABELS.length, currentStep));
-  const progressWidth = `${((safeCurrentStep - 1) / (STEP_LABELS.length - 1)) * 100}%`;
+  const trackWidth = 80; // track spans from the first marker (10%) to the last (90%)
+  const progressWidth = `${((safeCurrentStep - 1) / (STEP_LABELS.length - 1)) * trackWidth}%`;
 
   return (
     <View
