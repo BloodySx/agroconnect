@@ -110,7 +110,7 @@ export default function HomeScreen() {
 
               <View style={styles.featuredAction}>
                 <Text style={styles.featuredActionText}>Iniciar agora</Text>
-                <MaterialCommunityIcons name="arrow-right" size={19} color="#1D4D38" />
+                <MaterialCommunityIcons name="arrow-right" size={19} color="#FFFFFF" />
               </View>
 
               <MaterialCommunityIcons
