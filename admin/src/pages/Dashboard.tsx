@@ -11,7 +11,6 @@ import {
   IconBox,
   IconTag,
   IconUsers,
-  IconEye,
   IconCheck,
   IconX,
 } from '../components/icons';
@@ -245,13 +244,23 @@ export function DashboardPage() {
                           <th>Status</th>
                           <th>Valor</th>
                           <th>Data</th>
-                          <th className="dashboard-recent__actions-heading">Ações</th>
                         </tr>
                       </thead>
                       <tbody>
                         {data.recentOrders.map((order) => (
                           <tr key={order.id}>
-                            <td><span className="orders-id">#{order.id.slice(0, 8)}</span></td>
+                            <td>
+                              <button
+                                type="button"
+                                className="orders-id orders-id-button"
+                                onClick={() => navigate(`/admin/orders/${order.id}`)}
+                                aria-label={`Abrir detalhes do pedido ${order.id.slice(0, 8)}`}
+                                title="Abrir detalhes do pedido"
+                              >
+                                #{order.id.slice(0, 8)}
+                                <span aria-hidden="true">↗</span>
+                              </button>
+                            </td>
                             <td>
                               <div className="orders-customer">
                                 <strong>{order.user.name}</strong>
@@ -261,15 +270,6 @@ export function DashboardPage() {
                             <td><StatusBadge status={order.status as never} /></td>
                             <td className="orders-amount">{formatCurrency(order.totalValue)}</td>
                             <td className="orders-date">{formatDate(order.createdAt)}</td>
-                            <td className="dashboard-recent__actions">
-                              <button
-                                type="button"
-                                className="btn btn--ghost btn--sm"
-                                onClick={() => navigate(`/admin/orders/${order.id}`)}
-                              >
-                                <IconEye size={16} /> Detalhes
-                              </button>
-                            </td>
                           </tr>
                         ))}
                       </tbody>
