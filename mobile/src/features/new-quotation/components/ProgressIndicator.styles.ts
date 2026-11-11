@@ -8,23 +8,43 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 1,
   },
   progressRow: {
+    position: 'relative',
     flexDirection: 'row',
     alignItems: 'flex-start',
     width: '100%',
+  },
+  progressTrack: {
+    position: 'absolute',
+    left: '10%',
+    right: '10%',
+    top: 7,
+    height: 2,
+    borderRadius: 1,
+    backgroundColor: '#DDE5DA',
+  },
+  progressTrackActive: {
+    position: 'absolute',
+    left: '10%',
+    top: 7,
+    height: 2,
+    borderRadius: 1,
+    backgroundColor: '#8BAE8D',
   },
   stepColumn: {
     flex: 1,
     alignItems: 'center',
     minWidth: 0,
+    zIndex: 1,
   },
-  stepCircleRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
+  stepMarkerRow: {
     width: '100%',
+    height: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   stepCircle: {
-    width: 13,
-    height: 13,
+    width: 14,
+    height: 14,
     borderRadius: 7,
     borderWidth: 1.8,
     borderColor: '#D9E2D7',
@@ -40,17 +60,6 @@ export const styles = StyleSheet.create({
     borderRadius: 8,
     backgroundColor: '#2F6B4C',
     borderColor: '#2F6B4C',
-  },
-  stepLine: {
-    flex: 1,
-    height: 2,
-    backgroundColor: '#DDE5DA',
-  },
-  stepLineActive: {
-    backgroundColor: '#8BAE8D',
-  },
-  stepLineInvisible: {
-    backgroundColor: 'transparent',
   },
   stepLabel: {
     fontSize: 9,
