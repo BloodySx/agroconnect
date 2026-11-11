@@ -3,8 +3,9 @@ import { StyleSheet } from 'react-native';
 export const styles = StyleSheet.create({
   container: {
     width: '100%',
-    marginTop: 24,
-    marginBottom: 24,
+    marginTop: 17,
+    marginBottom: 23,
+    paddingHorizontal: 1,
   },
   progressRow: {
     flexDirection: 'row',
@@ -14,6 +15,7 @@ export const styles = StyleSheet.create({
   stepColumn: {
     flex: 1,
     alignItems: 'center',
+    minWidth: 0,
   },
   stepCircleRow: {
     flexDirection: 'row',
@@ -21,37 +23,55 @@ export const styles = StyleSheet.create({
     width: '100%',
   },
   stepCircle: {
-    width: 14,
-    height: 14,
+    width: 13,
+    height: 13,
     borderRadius: 7,
-    borderWidth: 2,
-    borderColor: '#DDE8DE',
+    borderWidth: 1.8,
+    borderColor: '#D9E2D7',
     backgroundColor: '#FFFFFF',
   },
-  stepCircleActive: {
-    backgroundColor: '#78B47F',
-    borderColor: '#78B47F',
+  stepCircleReached: {
+    backgroundColor: '#8BAE8D',
+    borderColor: '#8BAE8D',
+  },
+  stepCircleCurrent: {
+    width: 16,
+    height: 16,
+    borderRadius: 8,
+    backgroundColor: '#2F6B4C',
+    borderColor: '#2F6B4C',
   },
   stepLine: {
     flex: 1,
     height: 2,
-    backgroundColor: '#DDE8DE',
+    backgroundColor: '#DDE5DA',
   },
   stepLineActive: {
-    backgroundColor: '#78B47F',
+    backgroundColor: '#8BAE8D',
   },
   stepLineInvisible: {
     backgroundColor: 'transparent',
   },
-  stepValue: {
-    fontSize: 10,
-    fontWeight: '500',
-    color: '#68756B',
+  stepLabel: {
+    fontSize: 9,
+    fontWeight: '600',
+    color: '#A0AAA0',
     textAlign: 'center',
     marginTop: 8,
-    maxWidth: 70,
   },
-  stepValueEmpty: {
-    color: '#B8C4B8',
+  stepLabelReached: {
+    color: '#66816A',
+  },
+  stepLabelCurrent: {
+    color: '#245C40',
+    fontWeight: '800',
+  },
+  stepDetail: {
+    maxWidth: 66,
+    color: '#8B978B',
+    fontSize: 8,
+    fontWeight: '500',
+    textAlign: 'center',
+    marginTop: 2,
   },
 });
