@@ -470,34 +470,32 @@ export default function SummaryScreen() {
 
   if (submitted) {
     return (
-      <QuotationLayout
-        subtitle="Pedido enviado"
-        showBackButton={false}
-      >
-        <ScrollView
-          contentContainerStyle={styles.scrollContent}
-          showsVerticalScrollIndicator={false}
-        >
+      <QuotationLayout subtitle="Pedido enviado" showBackButton={false}>
+        <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
           <View style={styles.confirmationContainer}>
-            <View style={styles.checkCircle}>
-              <Text style={styles.checkIcon}>✓</Text>
+            <View style={styles.confirmationGlow}>
+              <View style={styles.checkCircle}>
+                <MaterialCommunityIcons name="check" size={48} color="#FFFFFF" />
+              </View>
             </View>
-
-            <Text style={styles.confirmationTitle}>
-              Pronto!
-            </Text>
-
+            <View style={styles.successEyebrow}>
+              <MaterialCommunityIcons name="check-circle" size={14} color="#3F7652" />
+              <Text style={styles.successEyebrowText}>SOLICITAÇÃO CONCLUÍDA</Text>
+            </View>
+            <Text style={styles.confirmationTitle}>Cotação enviada!</Text>
             <Text style={styles.confirmationText}>
-              Só aguardar que alguém entrará em contato!
+              Recebemos sua solicitação. Agora é só acompanhar o andamento dos seus pedidos pelo AgroConnect.
             </Text>
-
-            <Pressable
-              onPress={handleGoHome}
-              style={styles.homeButton}
-            >
-              <Text style={styles.homeButtonText}>
-                VOLTAR PARA HOME
-              </Text>
+            <View style={styles.successInfoCard}>
+              <MaterialCommunityIcons name="clipboard-check-outline" size={22} color="#3F7652" />
+              <View style={styles.successInfoCopy}>
+                <Text style={styles.successInfoTitle}>Tudo certo por aqui</Text>
+                <Text style={styles.successInfoDescription}>Sua solicitação foi registrada com sucesso.</Text>
+              </View>
+            </View>
+            <Pressable onPress={handleGoHome} style={({ pressed }) => [styles.homeButton, pressed && styles.buttonPressed]}>
+              <Text style={styles.homeButtonText}>Voltar para o início</Text>
+              <MaterialCommunityIcons name="arrow-right" size={19} color="#FFFFFF" />
             </Pressable>
           </View>
         </ScrollView>
@@ -507,63 +505,32 @@ export default function SummaryScreen() {
 
   if (error) {
     return (
-      <QuotationLayout
-        subtitle="Resumo do pedido"
-        showBackButton={true}
-        onBack={handleBack}
-      >
-        <ScrollView
-          contentContainerStyle={styles.scrollContent}
-          showsVerticalScrollIndicator={false}
-        >
-          <View style={styles.errorContainer}>
-            <Text style={styles.errorText}>
-              {error}
-            </Text>
+      <QuotationLayout showBackButton onBack={handleBack}>
+        <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+          <View style={styles.errorState}>
+            <View style={styles.errorIcon}>
+              <MaterialCommunityIcons name="alert-circle-outline" size={30} color="#A45C4D" />
+            </View>
+            <Text style={styles.errorTitle}>Não foi possível concluir</Text>
+            <Text style={styles.errorText}>{error}</Text>
 
             {priceChanged && !requiresRequote ? (
-              <>
-                <Text style={styles.errorText}>
-                  Preço atualizado por litro:{' '}
-                  {formatCurrency(
-                    quotation.package.pricePerLiter
-                  )}
-                </Text>
-
-                <Text style={styles.errorText}>
-                  Total atualizado:{' '}
-                  {formatCurrency(quotation.total)}
-                </Text>
-
-                <Pressable
-                  onPress={handleConfirm}
-                  style={styles.retryButton}
-                  disabled={loading}
-                >
-                  <Text style={styles.retryButtonText}>
-                    Confirmar com valor atualizado
-                  </Text>
+              <View style={styles.errorDetailsCard}>
+                <Text style={styles.errorDetailLabel}>Preço atualizado por litro</Text>
+                <Text style={styles.errorDetailValue}>{formatCurrency(quotation.package.pricePerLiter)}</Text>
+                <Text style={styles.errorDetailLabel}>Total atualizado</Text>
+                <Text style={styles.errorDetailValue}>{formatCurrency(quotation.total)}</Text>
+                <Pressable onPress={handleConfirm} style={styles.retryButton} disabled={loading}>
+                  <Text style={styles.retryButtonText}>Confirmar com valor atualizado</Text>
                 </Pressable>
-              </>
+              </View>
             ) : requiresRequote ? (
-              <Pressable
-                onPress={handleStartOver}
-                style={styles.retryButton}
-                disabled={loading}
-              >
-                <Text style={styles.retryButtonText}>
-                  Refazer cotação
-                </Text>
+              <Pressable onPress={handleStartOver} style={styles.retryButton} disabled={loading}>
+                <Text style={styles.retryButtonText}>Refazer cotação</Text>
               </Pressable>
             ) : (
-              <Pressable
-                onPress={() => setError(null)}
-                style={styles.retryButton}
-                disabled={loading}
-              >
-                <Text style={styles.retryButtonText}>
-                  Tentar novamente
-                </Text>
+              <Pressable onPress={() => setError(null)} style={styles.retryButton} disabled={loading}>
+                <Text style={styles.retryButtonText}>Voltar ao resumo</Text>
               </Pressable>
             )}
           </View>
@@ -572,183 +539,141 @@ export default function SummaryScreen() {
     );
   }
 
-  const allItems = currentItem
-    ? [currentItem, ...items]
-    : items;
-
+  const allItems = currentItem ? [currentItem, ...items] : items;
   const grandTotal = totalValue + currentItem.total;
 
   return (
-    <QuotationLayout
-      subtitle="Resumo do pedido"
-      showBackButton={true}
-      onBack={handleBack}
-    >
-      <ScrollView
-        contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}
-      >
+    <QuotationLayout showBackButton onBack={handleBack}>
+      <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+        <View style={styles.intro}>
+          <View style={styles.eyebrow}>
+            <View style={styles.eyebrowDot} />
+            <Text style={styles.eyebrowText}>NOVA COTAÇÃO · ETAPA 05</Text>
+          </View>
+          <Text style={styles.pageTitle}>Revise sua cotação</Text>
+          <Text style={styles.pageDescription}>
+            Confira os produtos, quantidades e condições antes de enviar sua solicitação.
+          </Text>
+        </View>
+
         <ProgressIndicator
           currentStep={5}
           product={quotation.product.name}
-          packageValue={getPackageProgressLabel(
-            quotation.package
-          )}
-          quantityValue={String(
-            quotation.quantityLiters
-          )}
+          packageValue={getPackageProgressLabel(quotation.package)}
+          quantityValue={String(quotation.quantityLiters)}
           paymentTermValue={effectivePaymentTerm}
-          paymentTermProgressValue={
-            quotation.paymentTermProgressValue || '28'
-          }
+          paymentTermProgressValue={quotation.paymentTermProgressValue || '28'}
         />
 
-        <View style={styles.summaryCard}>
-          {allItems.map((item) => (
-            <View key={item.id} style={styles.row}>
-              <View style={styles.rowHeader}>
-                <Text style={styles.rowHeaderLabel}>
-                  Produto
-                </Text>
-
-                <Text style={styles.rowHeaderValue}>
-                  {item.productName}
-                </Text>
-              </View>
-
-              <View style={styles.row}>
-                <Text style={styles.label}>
-                  Embalagem
-                </Text>
-
-                <Text style={styles.value}>
-                  {item.packageType === 'SACHÊ'
-                    ? 'Sachê - 1L'
-                    : item.packageName}
-                </Text>
-              </View>
-
-              <View style={styles.row}>
-                <Text style={styles.label}>
-                  Quantidade
-                </Text>
-
-                <View style={styles.valueGroup}>
-                  <Text style={styles.value}>
-                    {item.quantityLiters} litros
-                  </Text>
-
-                  {item.boxCount !== null ? (
-                    <Text style={styles.valueDetail}>
-                      {item.boxCount}{' '}
-                      {item.boxCount === 1
-                        ? 'caixa'
-                        : 'caixas'}{' '}
-                      de {item.volumeLiters} L
-                    </Text>
-                  ) : null}
-                </View>
-              </View>
-
-              <View style={styles.row}>
-                <Text style={styles.label}>
-                  Valor
-                </Text>
-
-                <Text style={styles.value}>
-                  {formatCurrency(item.total)}
-                </Text>
-              </View>
-            </View>
-          ))}
-
-          <View style={styles.totalSection}>
-            {(isAddingAnotherProduct ||
-              items.length > 0) && (
-              <>
-                {draftPaymentTerm ? (
-                  <View style={styles.row}>
-                    <Text style={styles.label}>
-                      Prazo de pagamento
-                    </Text>
-
-                    <Text style={styles.value}>
-                      {draftPaymentTerm}
-                    </Text>
-                  </View>
-                ) : null}
-
-                {draftDeliveryTerm ? (
-                  <View style={styles.row}>
-                    <Text style={styles.label}>
-                      Prazo de entrega
-                    </Text>
-
-                    <Text style={styles.value}>
-                      {draftDeliveryTerm}
-                    </Text>
-                  </View>
-                ) : null}
-              </>
-            )}
-
-            <Text style={styles.totalLabel}>
-              Valor total do pedido
-            </Text>
-
-            <Text style={styles.totalValue}>
-              {formatCurrency(grandTotal)}
-            </Text>
+        <View style={styles.summaryHeading}>
+          <View style={styles.summaryHeadingIcon}>
+            <MaterialCommunityIcons name="file-document-check-outline" size={20} color="#3B7652" />
+          </View>
+          <View style={styles.summaryHeadingCopy}>
+            <Text style={styles.summaryHeadingTitle}>Resumo do pedido</Text>
+            <Text style={styles.summaryHeadingCaption}>{allItems.length} {allItems.length === 1 ? 'item' : 'itens'} na cotação</Text>
           </View>
         </View>
 
-        <Pressable
-          onPress={handleConfirm}
-          style={[
-            styles.confirmButton,
-            loading && styles.confirmButtonLoading,
-          ]}
-          disabled={loading}
-        >
-          {loading ? (
-            <ActivityIndicator
-              color="#FFFFFF"
-              size="small"
-            />
-          ) : (
-            <Text style={styles.confirmButtonText}>
-              Confirmar
-            </Text>
-          )}
-        </Pressable>
+        {allItems.map((item, index) => (
+          <View key={item.id} style={styles.itemCard}>
+            <View style={styles.itemHeader}>
+              <View style={styles.itemIndex}>
+                <Text style={styles.itemIndexText}>{index + 1}</Text>
+              </View>
+              <View style={styles.itemHeadingCopy}>
+                <Text style={styles.itemEyebrow}>PRODUTO</Text>
+                <Text style={styles.itemName}>{item.productName}</Text>
+              </View>
+            </View>
 
-        <Pressable
-          onPress={handleAddProduct}
-          disabled={loading}
-          style={styles.addProductButton}
-        >
-          <Text style={styles.addProductButtonText}>
-            Adicionar produto
-          </Text>
-        </Pressable>
+            <View style={styles.itemDivider} />
 
-        <Pressable
-          onPress={handleCancel}
-          disabled={loading}
-          style={styles.cancelButton}
-        >
-          <Text style={styles.cancelButtonText}>
-            Cancelar
-          </Text>
-        </Pressable>
+            <View style={styles.detailRow}>
+              <Text style={styles.label}>Embalagem</Text>
+              <Text style={styles.value}>
+                {item.packageType === 'SACHÊ' ? 'Sachê - 1L' : item.packageName}
+              </Text>
+            </View>
 
-        {error && (
-          <View style={styles.errorContainer}>
-            <Text style={styles.errorText}>
-              {error}
-            </Text>
+            <View style={styles.detailRow}>
+              <Text style={styles.label}>Quantidade</Text>
+              <View style={styles.valueGroup}>
+                <Text style={styles.value}>{item.quantityLiters.toLocaleString('pt-BR')} litros</Text>
+                {item.boxCount !== null ? (
+                  <Text style={styles.valueDetail}>
+                    {item.boxCount} {item.boxCount === 1 ? 'caixa' : 'caixas'} de {item.volumeLiters} L
+                  </Text>
+                ) : null}
+              </View>
+            </View>
+
+            <View style={styles.detailRow}>
+              <Text style={styles.label}>Valor do item</Text>
+              <Text style={styles.value}>{formatCurrency(item.total)}</Text>
+            </View>
           </View>
-        )}
+        ))}
+
+        <View style={styles.conditionsCard}>
+          <Text style={styles.conditionsTitle}>Condições da solicitação</Text>
+          <View style={styles.conditionRow}>
+            <View style={styles.conditionIcon}>
+              <MaterialCommunityIcons name="calendar-check-outline" size={17} color="#52765A" />
+            </View>
+            <View style={styles.conditionCopy}>
+              <Text style={styles.conditionLabel}>Pagamento</Text>
+              <Text style={styles.conditionValue}>{effectivePaymentTerm}</Text>
+            </View>
+          </View>
+          <View style={styles.conditionRow}>
+            <View style={styles.conditionIcon}>
+              <MaterialCommunityIcons name="truck-delivery-outline" size={17} color="#52765A" />
+            </View>
+            <View style={styles.conditionCopy}>
+              <Text style={styles.conditionLabel}>Entrega</Text>
+              <Text style={styles.conditionValue}>{effectiveDeliveryTerm}</Text>
+            </View>
+          </View>
+        </View>
+
+        <View style={styles.totalCard}>
+          <View style={styles.totalCopy}>
+            <Text style={styles.totalEyebrow}>VALOR TOTAL ESTIMADO</Text>
+            <Text style={styles.totalCaption}>Soma dos itens selecionados</Text>
+          </View>
+          <Text style={styles.totalValue}>{formatCurrency(grandTotal)}</Text>
+        </View>
+
+        <View style={styles.actions}>
+          <Pressable
+            onPress={handleConfirm}
+            style={({ pressed }) => [
+              styles.confirmButton,
+              loading && styles.confirmButtonLoading,
+              pressed && !loading && styles.buttonPressed,
+            ]}
+            disabled={loading}
+          >
+            {loading ? (
+              <ActivityIndicator color="#FFFFFF" size="small" />
+            ) : (
+              <>
+                <Text style={styles.confirmButtonText}>Enviar cotação</Text>
+                <MaterialCommunityIcons name="arrow-right" size={20} color="#FFFFFF" />
+              </>
+            )}
+          </Pressable>
+
+          <Pressable onPress={handleAddProduct} disabled={loading} style={({ pressed }) => [styles.addProductButton, pressed && styles.buttonPressed]}>
+            <MaterialCommunityIcons name="plus" size={18} color="#2F6B4C" />
+            <Text style={styles.addProductButtonText}>Adicionar outro produto</Text>
+          </Pressable>
+
+          <Pressable onPress={handleCancel} disabled={loading} style={styles.cancelButton}>
+            <Text style={styles.cancelButtonText}>Cancelar solicitação</Text>
+          </Pressable>
+        </View>
       </ScrollView>
     </QuotationLayout>
   );
