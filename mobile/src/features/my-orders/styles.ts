@@ -178,13 +178,21 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 
+  filtersScroll: {
+    height: 50,
+    flexGrow: 0,
+    flexShrink: 0,
+  },
   filters: {
+    alignItems: 'center',
     gap: 8,
     paddingBottom: 15,
   },
   filterChip: {
+    height: 34,
+    justifyContent: 'center',
     paddingHorizontal: 14,
-    paddingVertical: 9,
+    paddingVertical: 0,
     borderRadius: 20,
     backgroundColor: '#FFFFFF',
     borderWidth: 1,
