@@ -11,22 +11,46 @@ import {
 
 interface NavEntry {
   label: string;
-  to?: string;
+  to: string;
   icon: React.ReactNode;
-  disabled?: boolean;
+}
+
+interface NavSection {
+  label: string;
+  items: NavEntry[];
 }
 
 export function Sidebar({ open, onNavigate }: { open: boolean; onNavigate: () => void }) {
   const location = useLocation();
 
-  const nav: NavEntry[] = [
-    { label: 'Dashboard', to: '/admin/dashboard', icon: <IconDashboard /> },
-    { label: 'Pedidos', to: '/admin/orders', icon: <IconOrders /> },
-    { label: 'Produtos', to: '/admin/products', icon: <IconBox /> },
-    { label: 'Embalagens', to: '/admin/packages', icon: <IconPackage /> },
-    { label: 'Preços', to: '/admin/prices', icon: <IconTag /> },
-    { label: 'Preços por Cliente', to: '/admin/client-prices', icon: <IconUserTag /> },
-    { label: 'Usuários', to: '/admin/users', icon: <IconUsers /> },
+  const sections: NavSection[] = [
+    {
+      label: 'Visão geral',
+      items: [
+        { label: 'Dashboard', to: '/admin/dashboard', icon: <IconDashboard /> },
+      ],
+    },
+    {
+      label: 'Operação',
+      items: [
+        { label: 'Pedidos', to: '/admin/orders', icon: <IconOrders /> },
+      ],
+    },
+    {
+      label: 'Catálogo e preços',
+      items: [
+        { label: 'Produtos', to: '/admin/products', icon: <IconBox /> },
+        { label: 'Embalagens', to: '/admin/packages', icon: <IconPackage /> },
+        { label: 'Preços', to: '/admin/prices', icon: <IconTag /> },
+        { label: 'Preços por cliente', to: '/admin/client-prices', icon: <IconUserTag /> },
+      ],
+    },
+    {
+      label: 'Administração',
+      items: [
+        { label: 'Usuários', to: '/admin/users', icon: <IconUsers /> },
+      ],
+    },
   ];
 
   return (
@@ -36,40 +60,50 @@ export function Sidebar({ open, onNavigate }: { open: boolean; onNavigate: () =>
       aria-label="Navegação principal"
     >
       <div className="sidebar__brand">
-        <div className="sidebar__logo">AG</div>
-        <div>
+        <div className="sidebar__logo" aria-hidden="true">
+          <svg viewBox="0 0 32 32" role="img">
+            <path d="M16 25V14" />
+            <path d="M16 17C16 10 11 7 5 7c0 7 4 11 11 11" />
+            <path d="M16 14c0-6 4-10 11-10 0 6-4 10-11 10" />
+            <path d="M8 26h16" />
+          </svg>
+        </div>
+        <div className="sidebar__brand-copy">
           <div className="sidebar__brand-name">AgroConnect</div>
-          <div className="sidebar__brand-sub">Painel Administrativo</div>
+          <div className="sidebar__brand-sub">Painel administrativo</div>
         </div>
       </div>
 
       <nav className="sidebar__nav" aria-label="Seções administrativas">
-        <div className="sidebar__section">Geral</div>
-        {nav.map((item) => {
-          const isActive = item.to && location.pathname.startsWith(item.to);
-          if (item.disabled || !item.to) {
-            return (
-              <div key={item.label} className="nav-item nav-item--disabled">
-                <span className="nav-item__icon">{item.icon}</span>
-                {item.label}
-              </div>
-            );
-          }
-          return (
-            <NavLink
-              key={item.label}
-              to={item.to}
-              className={`nav-item ${isActive ? 'nav-item--active' : ''}`}
-              onClick={onNavigate}
-            >
-              <span className="nav-item__icon">{item.icon}</span>
-              {item.label}
-            </NavLink>
-          );
-        })}
+        {sections.map((section) => (
+          <div className="sidebar__group" key={section.label}>
+            <div className="sidebar__section">{section.label}</div>
+            {section.items.map((item) => {
+              const isActive = location.pathname.startsWith(item.to);
+              return (
+                <NavLink
+                  key={item.to}
+                  to={item.to}
+                  end={item.to === '/admin/dashboard'}
+                  className={`nav-item ${isActive ? 'nav-item--active' : ''}`}
+                  onClick={onNavigate}
+                >
+                  <span className="nav-item__icon">{item.icon}</span>
+                  <span className="nav-item__label">{item.label}</span>
+                </NavLink>
+              );
+            })}
+          </div>
+        ))}
       </nav>
 
-      <div className="sidebar__footer">AgroConnect © {new Date().getFullYear()}</div>
+      <div className="sidebar__footer">
+        <span className="sidebar__footer-mark" aria-hidden="true">
+          <svg viewBox="0 0 16 16"><path d="M8 13V7M8 9C4 9 3 6 3 3c3 0 5 2 5 5M8 7c0-3 2-5 5-5 0 3-2 5-5 5M3 14h10" /></svg>
+        </span>
+        <span>AgroConnect · Gestão</span>
+        <span className="sidebar__footer-version">© {new Date().getFullYear()}</span>
+      </div>
     </aside>
   );
 }
